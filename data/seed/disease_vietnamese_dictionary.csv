@@ -1,0 +1,73 @@
+DiseaseNameEn,DiseaseNameVi,KeywordsVi,GroupCode
+Hypertension,Tăng huyết áp,tăng huyết áp;cao huyết áp,CARDIO
+High blood pressure,Cao huyết áp,cao huyết áp;tăng huyết áp,CARDIO
+Type 2 diabetes mellitus,Đái tháo đường type 2,đái tháo đường type 2;tiểu đường type 2,METABOLIC
+Type 2 diabetes,Đái tháo đường type 2,đái tháo đường type 2;tiểu đường type 2,METABOLIC
+Diabetes mellitus,Đái tháo đường,đái tháo đường;tiểu đường,METABOLIC
+Dyslipidemia,Rối loạn lipid máu,rối loạn lipid máu;mỡ máu cao,METABOLIC
+Coronary artery disease,Bệnh mạch vành,bệnh mạch vành;bệnh động mạch vành,CARDIO
+Myocardial infarction,Nhồi máu cơ tim,nhồi máu cơ tim;hội chứng mạch vành cấp,CARDIO
+Stroke,Đột quỵ,đột quỵ;tai biến mạch máu não,CARDIO
+Heart failure,Suy tim,suy tim,CARDIO
+Atrial fibrillation,Rung nhĩ,rung nhĩ,CARDIO
+COPD,Bệnh phổi tắc nghẽn mạn tính,bệnh phổi tắc nghẽn mạn tính;copd,RESPIRATORY
+Chronic obstructive pulmonary disease,Bệnh phổi tắc nghẽn mạn tính,bệnh phổi tắc nghẽn mạn tính;copd,RESPIRATORY
+Asthma,Hen phế quản,hen phế quản;hen,RESPIRATORY
+Pneumonia,Viêm phổi,viêm phổi,RESPIRATORY
+Tuberculosis,Lao phổi,lao phổi;bệnh lao,INFECTIOUS
+Pulmonary tuberculosis,Lao phổi,lao phổi;bệnh lao,INFECTIOUS
+Influenza,Cúm mùa,cúm mùa;cúm,INFECTIOUS
+COVID-19,COVID-19,covid-19;covid,INFECTIOUS
+Dengue fever,Sốt xuất huyết Dengue,sốt xuất huyết dengue;sốt xuất huyết,INFECTIOUS
+Hepatitis B,Viêm gan B,viêm gan b;hbv,INFECTIOUS
+Hepatitis C,Viêm gan C,viêm gan c;hcv,INFECTIOUS
+HIV infection,Nhiễm HIV,nhiễm hiv;hiv;aids,INFECTIOUS
+Peptic ulcer disease,Viêm loét dạ dày tá tràng,viêm loét dạ dày tá tràng;loét dạ dày;loét tá tràng,DIGESTIVE
+GERD,Trào ngược dạ dày thực quản,trào ngược dạ dày thực quản;trào ngược dạ dày,DIGESTIVE
+Gastroesophageal reflux disease,Trào ngược dạ dày thực quản,trào ngược dạ dày thực quản;trào ngược dạ dày,DIGESTIVE
+Diarrhea,Tiêu chảy,tiêu chảy,DIGESTIVE
+Acute diarrhea,Tiêu chảy cấp,tiêu chảy cấp;tiêu chảy,DIGESTIVE
+Urinary tract infection,Nhiễm khuẩn tiết niệu,nhiễm khuẩn tiết niệu;nhiễm trùng đường tiểu,UROLOGY
+Chronic kidney disease,Bệnh thận mạn,bệnh thận mạn;suy thận mạn,UROLOGY
+Gout,Gout,gout;gút,AUTOIMMUNE
+Osteoarthritis,Thoái hóa khớp,thoái hóa khớp,AUTOIMMUNE
+Rheumatoid arthritis,Viêm khớp dạng thấp,viêm khớp dạng thấp,AUTOIMMUNE
+Migraine,Đau nửa đầu,đau nửa đầu,NEURO
+Headache,Đau đầu,đau đầu,NEURO
+Epilepsy,Động kinh,động kinh,NEURO
+Parkinson disease,Bệnh Parkinson,bệnh parkinson;parkinson,NEURO
+Parkinson's disease,Bệnh Parkinson,bệnh parkinson;parkinson,NEURO
+Alzheimer disease,Bệnh Alzheimer,bệnh alzheimer;alzheimer,NEURO
+Alzheimer's disease,Bệnh Alzheimer,bệnh alzheimer;alzheimer,NEURO
+Depression,Trầm cảm,trầm cảm,MENTAL
+Major depressive disorder,Trầm cảm nặng,trầm cảm nặng;trầm cảm,MENTAL
+Anxiety disorder,Rối loạn lo âu,rối loạn lo âu;lo âu,MENTAL
+Insomnia,Mất ngủ,mất ngủ,MENTAL
+Lung cancer,Ung thư phổi,ung thư phổi,CANCER
+Liver cancer,Ung thư gan,ung thư gan,CANCER
+Colorectal cancer,Ung thư đại trực tràng,ung thư đại trực tràng;ung thư đại tràng;ung thư trực tràng,CANCER
+Breast cancer,Ung thư vú,ung thư vú,CANCER
+Cervical cancer,Ung thư cổ tử cung,ung thư cổ tử cung,CANCER
+Stomach cancer,Ung thư dạ dày,ung thư dạ dày,CANCER
+Hypothyroidism,Suy giáp,suy giáp,METABOLIC
+Hyperthyroidism,Cường giáp,cường giáp,METABOLIC
+Iron deficiency anemia,Thiếu máu do thiếu sắt,thiếu máu do thiếu sắt;thiếu máu thiếu sắt;thiếu sắt,OTHER
+Allergic rhinitis,Viêm mũi dị ứng,viêm mũi dị ứng;dị ứng mũi,RESPIRATORY
+Atopic dermatitis,Viêm da cơ địa,viêm da cơ địa;chàm cơ địa,DERMATOLOGY
+Urticaria,Mề đay,mề đay;mày đay,DERMATOLOGY
+Dermatophytosis,Nhiễm nấm da,nhiễm nấm da;nấm da;hắc lào,DERMATOLOGY
+Sinusitis,Viêm xoang,viêm xoang,RESPIRATORY
+Pharyngitis,Viêm họng,viêm họng,RESPIRATORY
+Tonsillitis,Viêm amidan,viêm amidan;viêm amiđan,RESPIRATORY
+Bronchitis,Viêm phế quản,viêm phế quản,RESPIRATORY
+Psoriasis,Vảy nến,vảy nến,DERMATOLOGY
+Plaque psoriasis,Vảy nến thể mảng,vảy nến thể mảng;vảy nến,DERMATOLOGY
+Bipolar disorder,Rối loạn lưỡng cực,rối loạn lưỡng cực,MENTAL
+Schizophrenia,Tâm thần phân liệt,tâm thần phân liệt,MENTAL
+Osteoporosis,Loãng xương,loãng xương,AUTOIMMUNE
+Obesity,Béo phì,béo phì;thừa cân,METABOLIC
+Benign prostatic hyperplasia,Tăng sản lành tính tuyến tiền liệt,tăng sản lành tính tuyến tiền liệt;phì đại tuyến tiền liệt,UROLOGY
+BPH,Tăng sản lành tính tuyến tiền liệt,tăng sản lành tính tuyến tiền liệt;phì đại tuyến tiền liệt,UROLOGY
+Endometriosis,Lạc nội mạc tử cung,lạc nội mạc tử cung,OTHER
+Polycystic ovary syndrome,Hội chứng buồng trứng đa nang,hội chứng buồng trứng đa nang;buồng trứng đa nang,OTHER
+PCOS,Hội chứng buồng trứng đa nang,hội chứng buồng trứng đa nang;buồng trứng đa nang,OTHER
