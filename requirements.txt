@@ -1,0 +1,6 @@
+requests
+pandas
+pyodbc
+python-dotenv
+tqdm
+lxml
