@@ -1,1 +1,1 @@
-Thanh vien nhom: Bang, My, Khoa, Hieu
+Thanh vien nhom: Bang, My, Khoa, HieuUpdate frontend layout note
