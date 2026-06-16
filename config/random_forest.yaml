@@ -1,0 +1,9 @@
+data_path: data/drug_disease_links.csv
+model_path: models/random_forest_drug_disease.joblib
+test_size: 0.3
+random_state: 42
+random_forest:
+  n_estimators: 200
+  max_depth: 6
+  min_samples_leaf: 1
+  class_weight: balanced
