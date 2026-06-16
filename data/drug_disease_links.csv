@@ -1,0 +1,21 @@
+drug_id,drug_name,disease_id,disease_name,drug_class,disease_group,mechanism_overlap,clinical_evidence,known_link
+D001,Metformin,B001,Type 2 diabetes,Antidiabetic,Endocrine,0.92,0.95,1
+D002,Atorvastatin,B002,Hyperlipidemia,Statin,Cardiovascular,0.88,0.91,1
+D003,Amlodipine,B003,Hypertension,Calcium channel blocker,Cardiovascular,0.83,0.89,1
+D004,Oseltamivir,B004,Influenza,Antiviral,Infectious,0.78,0.84,1
+D005,Amoxicillin,B005,Bacterial pneumonia,Antibiotic,Infectious,0.81,0.86,1
+D006,Ibuprofen,B006,Osteoarthritis,NSAID,Musculoskeletal,0.72,0.76,1
+D007,Loratadine,B007,Allergic rhinitis,Antihistamine,Immune,0.75,0.8,1
+D008,Sertraline,B008,Depression,SSRI,Neurology,0.7,0.78,1
+D009,Omeprazole,B009,Gastroesophageal reflux,Proton pump inhibitor,Gastrointestinal,0.86,0.9,1
+D010,Salbutamol,B010,Asthma,Beta agonist,Respiratory,0.84,0.88,1
+D001,Metformin,B008,Depression,Antidiabetic,Neurology,0.24,0.18,0
+D002,Atorvastatin,B007,Allergic rhinitis,Statin,Immune,0.19,0.16,0
+D003,Amlodipine,B005,Bacterial pneumonia,Calcium channel blocker,Infectious,0.22,0.2,0
+D004,Oseltamivir,B006,Osteoarthritis,Antiviral,Musculoskeletal,0.17,0.14,0
+D005,Amoxicillin,B003,Hypertension,Antibiotic,Cardiovascular,0.2,0.18,0
+D006,Ibuprofen,B002,Hyperlipidemia,NSAID,Cardiovascular,0.28,0.22,0
+D007,Loratadine,B009,Gastroesophageal reflux,Antihistamine,Gastrointestinal,0.23,0.19,0
+D008,Sertraline,B010,Asthma,SSRI,Respiratory,0.25,0.21,0
+D009,Omeprazole,B004,Influenza,Proton pump inhibitor,Infectious,0.18,0.15,0
+D010,Salbutamol,B001,Type 2 diabetes,Beta agonist,Endocrine,0.21,0.17,0
