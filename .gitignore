@@ -3,9 +3,14 @@ dist/
 build/
 .next/
 coverage/
+.vite/
 
 bin/
 obj/
+
+__pycache__/
+**/__pycache__/
+*.pyc
 
 .env
 .env.*
@@ -16,3 +21,7 @@ obj/
 *.log
 *.user
 *.suo
+
+ai/data/raw/external/*.csv
+ai/data/raw/external/*.gz
+!ai/data/raw/external/README.md
