@@ -4,20 +4,26 @@ Thu muc nay dung de train model AI rieng cho he thong, tach khoi frontend va bac
 
 ## Nguon du lieu
 
-Script doc du lieu tu SQL Server database `DrugDiseaseML_DB_check`, bang `dbo.DatasetItems`, join them `dbo.Drugs`, `dbo.Diseases`, va `dbo.DrugDiseaseLinks`.
+Script doc du lieu tu SQL Server database `DataThuoc`.
+
+Bang du lieu chinh:
+
+- `dbo.Thuoc`: danh sach thuoc.
+- `dbo.Benh`: danh sach benh/chi dinh.
+- `dbo.LienKetThuocBenh`: lien ket thuoc - benh da biet.
 
 Label:
 
-- `LabelValue = 1`: co lien ket thuoc - benh.
-- `LabelValue = 0`: mau am/unknown negative.
+- `LabelValue = 1`: cap thuoc - benh co trong `LienKetThuocBenh`.
+- `LabelValue = 0`: cap thuoc - benh chua co lien ket, duoc tao tu cung thuoc voi mot benh khac chua lien ket.
 
-Split trong database hien tai:
+Dataset duoc chia bang stratified split:
 
 - `TRAIN`: train RandomForest.
 - `VALIDATION`: danh gia trong qua trinh chon tham so.
 - `TEST`: danh gia cuoi cung.
 
-Neu split trong database khong can bang label, script se dung stratified split moi theo `LabelValue` de dam bao train/validation/test deu co ca 2 lop.
+Stratified split dam bao train/validation/test deu co ca 2 lop `0` va `1`.
 
 ## Thuat toan RandomForest
 
@@ -45,6 +51,14 @@ RandomForest classification tong hop ket qua bang voting/xac suat trung binh tu 
 P(class=1) = trung_binh(P_tree_i(class=1))
 ```
 
+Trong code, model duoc tao bang `sklearn.ensemble.RandomForestClassifier`.
+Pipeline train gom:
+
+1. Tao feature dang dictionary tu tung cap thuoc - benh.
+2. Ma hoa feature bang `DictVectorizer`.
+3. Train `RandomForestClassifier`.
+4. Tinh metric tren validation/test bang nhan that va nhan du doan.
+
 ## Tham so dang dung
 
 Xem file `ai/config/random_forest.json`:
@@ -58,6 +72,7 @@ Xem file `ai/config/random_forest.json`:
 - `bootstrap`: co lay mau bootstrap cho tung cay hay khong.
 - `class_weight`: can bang trong so lop.
 - `random_state`: seed de tai lap ket qua.
+- `n_jobs`: so luong CPU job, dang de `-1` de dung toi da CPU kha dung.
 
 ## Chong data leakage
 
@@ -86,3 +101,24 @@ Ket qua:
 - Model: `ai/models/random_forest_thuoc_benh.joblib`
 - Metrics: `ai/reports/bao_cao_random_forest.json`
 - Feature importance: `ai/reports/do_quan_trong_dac_trung.csv`
+
+## Tich hop backend sau nay
+
+Backend moi chi can load file model `.joblib` va tao feature cung schema:
+
+- `drug_id`
+- `disease_id`
+- `drug_code`
+- `disease_code`
+- `drug_group_id`
+- `route_id`
+- `disease_group_id`
+- `do_dai_ten_thuoc`
+- `do_dai_ten_benh`
+
+Sau do goi:
+
+```python
+xac_suat = mo_hinh.predict_proba([dac_trung])[0][positive_index]
+nhan_du_doan = mo_hinh.predict([dac_trung])[0]
+```

@@ -1,26 +1,76 @@
 SET NOCOUNT ON;
-SELECT
-    di.DatasetItemId,
-    di.DrugId,
-    di.DiseaseId,
-    di.LabelValue,
-    di.SplitName,
-    REPLACE(REPLACE(COALESCE(di.FeatureVectorJson, N'{}'), CHAR(13), N' '), CHAR(10), N' ') AS FeatureVectorJson,
-    COALESCE(dr.DrugCode, N'') AS DrugCode,
-    COALESCE(dr.ActiveName, N'') AS ActiveName,
-    COALESCE(dr.TradeName, N'') AS TradeName,
-    COALESCE(CAST(dr.DrugGroupId AS nvarchar(30)), N'') AS DrugGroupId,
-    COALESCE(CAST(dr.RouteId AS nvarchar(30)), N'') AS RouteId,
-    COALESCE(CAST(dis.DiseaseGroupId AS nvarchar(30)), N'') AS DiseaseGroupId,
-    COALESCE(dis.DiseaseCode, N'') AS DiseaseCode,
-    COALESCE(dis.DiseaseName, N'') AS DiseaseName,
-    COALESCE(lt.LinkTypeCode, N'UNKNOWN') AS LinkTypeCode,
-    COALESCE(cl.LevelCode, N'UNKNOWN') AS ConfidenceLevelCode,
-    COALESCE(CAST(src.SourceScore AS nvarchar(30)), N'') AS SourceScore
-FROM dbo.DatasetItems di
-JOIN dbo.Drugs dr ON dr.DrugId = di.DrugId
-JOIN dbo.Diseases dis ON dis.DiseaseId = di.DiseaseId
-LEFT JOIN dbo.DrugDiseaseLinks src ON src.LinkId = di.SourceLinkId
-LEFT JOIN dbo.LinkTypes lt ON lt.LinkTypeId = src.LinkTypeId
-LEFT JOIN dbo.ConfidenceLevels cl ON cl.ConfidenceLevelId = src.ConfidenceLevelId
-ORDER BY di.DatasetItemId;
+
+DECLARE @MaxBenhId int = (
+    SELECT MAX(BenhId)
+    FROM dbo.Benh
+);
+
+WITH MauDuong AS
+(
+    SELECT
+        lk.LienKetId AS DatasetItemId,
+        lk.ThuocId AS DrugId,
+        lk.BenhId AS DiseaseId,
+        CAST(1 AS int) AS LabelValue,
+        N'ALL' AS SplitName,
+        N'{}' AS FeatureVectorJson,
+        COALESCE(t.MaThuoc, N'') AS DrugCode,
+        COALESCE(t.TenThuoc, N'') AS ActiveName,
+        COALESCE(t.TenThuocGoc, N'') AS TradeName,
+        COALESCE(CAST(t.NhomThuocId AS nvarchar(30)), N'') AS DrugGroupId,
+        N'' AS RouteId,
+        COALESCE(CAST(b.NhomBenhId AS nvarchar(30)), N'') AS DiseaseGroupId,
+        COALESCE(b.MaBenh, N'') AS DiseaseCode,
+        COALESCE(b.TenBenh, N'') AS DiseaseName,
+        COALESCE(llt.MaLoaiLienKet, N'UNKNOWN') AS LinkTypeCode,
+        COALESCE(mtc.MaMucTinCay, N'UNKNOWN') AS ConfidenceLevelCode,
+        COALESCE(CAST(lk.DiemLienKet AS nvarchar(30)), N'') AS SourceScore
+    FROM dbo.LienKetThuocBenh lk
+    JOIN dbo.Thuoc t ON t.ThuocId = lk.ThuocId
+    JOIN dbo.Benh b ON b.BenhId = lk.BenhId
+    LEFT JOIN dbo.LoaiLienKet llt ON llt.LoaiLienKetId = lk.LoaiLienKetId
+    LEFT JOIN dbo.MucTinCay mtc ON mtc.MucTinCayId = lk.MucTinCayId
+),
+MauAm AS
+(
+    SELECT
+        lkNguon.LienKetId + 100000000 AS DatasetItemId,
+        t.ThuocId AS DrugId,
+        b.BenhId AS DiseaseId,
+        CAST(0 AS int) AS LabelValue,
+        N'ALL' AS SplitName,
+        N'{}' AS FeatureVectorJson,
+        COALESCE(t.MaThuoc, N'') AS DrugCode,
+        COALESCE(t.TenThuoc, N'') AS ActiveName,
+        COALESCE(t.TenThuocGoc, N'') AS TradeName,
+        COALESCE(CAST(t.NhomThuocId AS nvarchar(30)), N'') AS DrugGroupId,
+        N'' AS RouteId,
+        COALESCE(CAST(b.NhomBenhId AS nvarchar(30)), N'') AS DiseaseGroupId,
+        COALESCE(b.MaBenh, N'') AS DiseaseCode,
+        COALESCE(b.TenBenh, N'') AS DiseaseName,
+        N'UNKNOWN' AS LinkTypeCode,
+        N'UNKNOWN' AS ConfidenceLevelCode,
+        N'' AS SourceScore
+    FROM dbo.LienKetThuocBenh lkNguon
+    JOIN dbo.Thuoc t ON t.ThuocId = lkNguon.ThuocId
+    JOIN dbo.Benh b
+        ON b.BenhId =
+            CASE
+                WHEN lkNguon.BenhId < @MaxBenhId
+                THEN lkNguon.BenhId + 1
+                ELSE 1
+            END
+    WHERE NOT EXISTS
+    (
+        SELECT 1
+        FROM dbo.LienKetThuocBenh lk
+        WHERE lk.ThuocId = lkNguon.ThuocId
+          AND lk.BenhId = b.BenhId
+    )
+)
+SELECT *
+FROM MauDuong
+UNION ALL
+SELECT *
+FROM MauAm
+ORDER BY DatasetItemId;
