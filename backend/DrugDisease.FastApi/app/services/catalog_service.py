@@ -25,7 +25,7 @@ def _page(page: int | None) -> int:
 
 
 def _page_size(page_size: int | None) -> int:
-    return max(1, min(int(page_size or 12), 100))
+    return max(1, min(int(page_size or 12), 20000))
 
 
 def _charindex_any(keyword: str, columns: list) -> object:

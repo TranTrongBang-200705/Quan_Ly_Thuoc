@@ -1,39 +1,23 @@
-import { Database, Link2, Pill, Settings, Stethoscope, Users } from "lucide-react";
+import { Database, Settings } from "lucide-react";
 import { api } from "../api";
-import { DiseaseCard, MedicineCard, StatCard } from "../components/medical";
-import { Alert, Badge, Card, EmptyState, LoadingSkeleton, PageHeader } from "../components/ui";
+import { DiseaseCard, MedicineCard } from "../components/medical";
+import { Alert, Badge, Card, EmptyState, LoadingSkeleton } from "../components/ui";
 import { useLoad } from "../hooks/useLoad";
 import { getItems, getTotal } from "../utils/format";
 
 export function AdminDashboardPage() {
-  const drugs = useLoad(() => api.getDrugs({ page: 1, pageSize: 1 }), []);
-  const diseases = useLoad(() => api.getDiseases({ page: 1, pageSize: 1 }), []);
-  const links = useLoad(() => api.getAdminLinks({}), []);
-  const predictions = useLoad(() => api.getAdminPredictionHistory({}), []);
-
   return (
     <section className="space-y-5">
-      <PageHeader
-        eyebrow="Admin control"
-        title="Tổng quan quản trị"
-        subtitle="Giám sát dữ liệu thuốc-bệnh, liên kết và các yêu cầu dự đoán."
-      />
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Pill} label="Thuốc" value={getTotal(drugs.data)} hint="Catalog DataThuoc" />
-        <StatCard icon={Stethoscope} label="Bệnh" value={getTotal(diseases.data)} hint="Clinical indications" tone="cyan" />
-        <StatCard icon={Link2} label="Liên kết" value={getItems(links.data).length} hint="Đang hiển thị" tone="emerald" />
-        <StatCard icon={Users} label="Dự đoán" value={getItems(predictions.data).length} hint="Admin history" tone="blue" />
-      </div>
-
-      {(drugs.error || diseases.error || links.error || predictions.error) && (
-        <Alert tone="danger">{drugs.error || diseases.error || links.error || predictions.error}</Alert>
-      )}
-
-      <Card>
-        <span className="inline-block text-xs font-bold text-teal-600 tracking-widest uppercase mb-1">Operational note</span>
-        <h3 className="text-base font-bold text-slate-900 m-0">Quản trị dữ liệu</h3>
-        <p className="text-sm text-slate-500 mt-1 m-0">Giao diện đang dùng các endpoint backend hiện có. Các thao tác thêm/sửa/xóa chỉ hiển thị khi backend cung cấp endpoint tương ứng.</p>
+      <Card className="!p-4">
+        <span className="inline-block text-xs font-bold text-teal-600 tracking-widest uppercase mb-1">
+          Admin hidden
+        </span>
+        <h2 className="text-lg font-bold text-slate-900 m-0">
+          Trang quản trị cũ đã được ẩn
+        </h2>
+        <p className="text-sm text-slate-500 mt-1 m-0">
+          Khu vực điều hướng chính hiện dùng dashboard chung, tra cứu, dự đoán AI, lịch sử và phản hồi theo role.
+        </p>
       </Card>
     </section>
   );
@@ -45,12 +29,6 @@ export function AdminCatalogPage() {
 
   return (
     <section className="space-y-5">
-      <PageHeader
-        eyebrow="Catalog monitor"
-        title="Dữ liệu thuốc và bệnh"
-        subtitle="Xem nhanh mẫu dữ liệu để kiểm tra chất lượng catalog y dược."
-      />
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
         <Card className="space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -95,11 +73,6 @@ export function AdminLookupsPage() {
 
   return (
     <section className="space-y-5">
-      <PageHeader
-        eyebrow="System taxonomy"
-        title="Danh mục hệ thống"
-        subtitle="Các lookup đang được backend trả về cho UI và form nghiệp vụ."
-      />
       {lookups.error && <Alert tone="danger">{lookups.error}</Alert>}
       {lookups.loading ? (
         <LoadingSkeleton count={6} />

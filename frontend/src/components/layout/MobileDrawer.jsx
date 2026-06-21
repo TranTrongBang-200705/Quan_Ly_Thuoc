@@ -11,6 +11,14 @@ export function MobileDrawer({
   roles,
   onLogout,
 }) {
+  const roleLabels = (roles?.length ? roles : ["USER"]).map((role) =>
+    String(role).toUpperCase(),
+  );
+  const displayName =
+    user?.fullName || user?.displayName || user?.hoTen || user?.username || user?.email || "Người dùng";
+  const secondaryIdentity = user?.email || user?.username || "";
+  const avatarLetter = (displayName || secondaryIdentity || "U").slice(0, 1).toUpperCase();
+
   return (
     <>
       {/* Backdrop */}
@@ -88,13 +96,20 @@ export function MobileDrawer({
         <div className="p-4 border-t border-slate-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white text-sm font-bold shrink-0">
-              {(user?.fullName || user?.email || "U").slice(0, 1).toUpperCase()}
+              {avatarLetter}
             </div>
             <div className="min-w-0">
               <p className="text-sm font-bold text-slate-900 truncate m-0">
-                {user?.fullName || user?.username || "Người dùng"}
+                {displayName}
               </p>
-              <p className="text-xs text-slate-500 truncate m-0">{user?.email}</p>
+              {secondaryIdentity && (
+                <p className="text-xs text-slate-500 truncate m-0">{secondaryIdentity}</p>
+              )}
+              {roleLabels.length > 0 && (
+                <p className="text-[11px] font-semibold text-teal-600 truncate m-0">
+                  {roleLabels.join(", ")}
+                </p>
+              )}
             </div>
           </div>
           <button

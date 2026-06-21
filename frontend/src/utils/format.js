@@ -24,7 +24,42 @@ export function fallback(value, empty = "-") {
 
 export function formatScore(value) {
   if (!hasValue(value)) return "-";
-  return Number(value).toFixed(4);
+  const number = Number(String(value).replace(",", "."));
+  if (!Number.isFinite(number)) return "-";
+  return number.toFixed(4);
+}
+
+export function parseNumberInput(value) {
+  const normalized = String(value ?? "").trim().replace(",", ".");
+  if (!normalized) return NaN;
+  return Number(normalized);
+}
+
+export function normalizePredictionType(value) {
+  return value === "PAIR_PREDICTION" ? "PAIR_CHECK" : value;
+}
+
+export function toBackendPredictionType(value) {
+  return normalizePredictionType(value) === "PAIR_CHECK"
+    ? "PAIR_PREDICTION"
+    : value;
+}
+
+export function inferConfidenceFromScore(value) {
+  const score = parseNumberInput(value);
+  if (!Number.isFinite(score)) return "Đang phân loại";
+  if (score >= 0.8) return "Cao";
+  if (score >= 0.5) return "Trung bình";
+  return "Thấp";
+}
+
+export function inferLinkConclusion(value, explicitConclusion) {
+  if (hasValue(explicitConclusion)) return explicitConclusion;
+  const score = parseNumberInput(value);
+  if (!Number.isFinite(score)) return "Chưa đủ dữ liệu để kết luận";
+  if (score >= 0.8) return "Liên kết mạnh";
+  if (score >= 0.5) return "Liên kết trung bình";
+  return "Liên kết yếu hoặc chưa đủ bằng chứng";
 }
 
 export function formatPercent(value) {
@@ -67,7 +102,7 @@ export const DEFAULT_EXPLANATION_MESSAGE =
   "Liên kết được suy ra từ dữ liệu công dụng/chỉ định có sẵn của thuốc trong cơ sở dữ liệu.";
 
 export const STANDARD_MEDICAL_WARNING =
-  "Kết quả chỉ phục vụ học tập, nghiên cứu và tham khảo. Không dùng để tự chẩn đoán, kê đơn hoặc thay thế tư vấn của bác sĩ/dược sĩ.";
+  "Kết quả chỉ phục vụ học tập, nghiên cứu và tham khảo, không thay thế tư vấn của bác sĩ hoặc dược sĩ.";
 
 export function hasBrokenVietnameseEncoding(value) {
   const text = String(value || "");

@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   Database,
   History,
-  Link2,
   Pill,
   Sparkles,
   Stethoscope,
@@ -48,8 +47,7 @@ const WORKFLOW_STEPS = [
 ];
 
 const QUICK_ACTIONS = [
-  { id: "drugs", icon: Pill, label: "Tra cứu thuốc", desc: "Tìm thuốc, hoạt chất, công dụng" },
-  { id: "diseases", icon: Stethoscope, label: "Tra cứu bệnh/chỉ định", desc: "Tìm bệnh, triệu chứng, nhóm bệnh" },
+  { id: "catalog", icon: Pill, label: "Tra cứu thuốc/bệnh", desc: "Tìm thuốc, bệnh/chỉ định và xem chi tiết" },
   { id: "prediction", icon: Beaker, label: "Tạo dự đoán AI", desc: "Phân tích liên kết thuốc-bệnh" },
   { id: "history", icon: History, label: "Xem lịch sử", desc: "Theo dõi các dự đoán đã thực hiện" },
 ];
@@ -193,10 +191,9 @@ function PredictionTypeDonut({ data }) {
 export function DashboardPage({ onNavigate, health }) {
   const drugs = useLoad(() => api.getDrugs({ page: 1, pageSize: 1 }), []);
   const diseases = useLoad(() => api.getDiseases({ page: 1, pageSize: 1 }), []);
-  const links = useLoad(() => api.getLinks({}), []);
   const history = useLoad(() => api.getPredictionHistory(), []);
 
-  const loading = drugs.loading || diseases.loading || links.loading || history.loading;
+  const loading = drugs.loading || diseases.loading || history.loading;
   const historyItems = getItems(history.data);
   const recent = historyItems.slice(0, 5);
   const analytics = useMemo(() => buildAnalytics(historyItems), [historyItems]);
@@ -206,20 +203,18 @@ export function DashboardPage({ onNavigate, health }) {
     <section className="space-y-6">
       {/* ── Hero Panel ── */}
       <Card className="!p-0 overflow-hidden">
-        <div className="grid md:grid-cols-[1fr,280px]">
-          {/* Left content */}
-          <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-8">
             <span className="inline-block text-xs font-bold text-teal-600 tracking-widest uppercase mb-2">
               Medical AI Clinical Dashboard
             </span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 m-0 leading-tight">
               DrugDiseaseML
             </h2>
-            <p className="text-slate-600 mt-3 mb-0 text-sm sm:text-base leading-relaxed max-w-xl">
+            <p className="text-slate-600 mt-3 mb-0 text-sm sm:text-base leading-relaxed max-w-3xl">
               Nền tảng hỗ trợ phân tích liên kết thuốc-bệnh bằng AI, kết hợp dữ liệu
               dược học và cảnh báo an toàn y tế.
             </p>
-            <p className="text-slate-500 mt-2 mb-0 text-xs sm:text-sm leading-relaxed max-w-xl">
+            <p className="text-slate-500 mt-2 mb-0 text-xs sm:text-sm leading-relaxed max-w-3xl">
               Tra cứu dữ liệu thuốc, bệnh/chỉ định và phân tích liên kết bằng mô hình
               AI kết hợp dữ liệu lâm sàng có kiểm soát.
             </p>
@@ -228,33 +223,19 @@ export function DashboardPage({ onNavigate, health }) {
                 <Beaker size={18} />
                 Tạo dự đoán mới
               </Button>
-              <Button variant="secondary" onClick={() => onNavigate("drugs")}>
+              <Button variant="secondary" onClick={() => onNavigate("catalog")}>
                 <Pill size={18} />
-                Tra cứu thuốc
+                Tra cứu thuốc/bệnh
               </Button>
             </div>
-          </div>
-
-          {/* Right visual */}
-          <div className="hidden md:flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-teal-50 to-cyan-50 border-l border-[var(--color-border)] p-6 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white">
-              <Brain size={32} />
-            </div>
-            <strong className="text-sm font-bold text-slate-800">
-              AI Clinical Assistant
-            </strong>
-            <span className="text-xs font-semibold text-teal-600">
-              {health?.aiStatus === "healthy" ? "AI model ready" : "Fallback data mode"}
-            </span>
-          </div>
         </div>
       </Card>
 
       {/* ── Stat Cards ── */}
       {loading ? (
-        <LoadingSkeleton count={4} />
+        <LoadingSkeleton count={3} />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <StatCard
             icon={Pill}
             label="Tổng số thuốc"
@@ -268,13 +249,6 @@ export function DashboardPage({ onNavigate, health }) {
             value={getTotal(diseases.data)}
             hint="Từ bảng Benh"
             tone="cyan"
-          />
-          <StatCard
-            icon={Link2}
-            label="Liên kết hiển thị"
-            value={getItems(links.data).length}
-            hint="API giới hạn 100 dòng"
-            tone="emerald"
           />
           <StatCard
             icon={Activity}

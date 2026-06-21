@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown, LogOut, Menu } from "lucide-react";
 import clsx from "clsx";
 import { SystemStatusBadge } from "../medical";
@@ -28,10 +28,17 @@ export function TopNavigation({
   const databaseStatus = health?.status === "healthy" ? "healthy" : "unknown";
   const aiStatus = health?.aiStatus === "healthy" ? "ready" : "fallback";
 
-  /* Flat list for top-level display */
-  const allItems = navItems.flatMap((g) => g.items);
+  const primaryGroup = navItems.find((group) => group.type !== "admin");
+  const primaryItems = primaryGroup?.items ?? [];
+  const roleLabels = (roles?.length ? roles : ["USER"]).map((role) =>
+    String(role).toUpperCase(),
+  );
+  const isAdmin = roleLabels.some((role) => String(role).toUpperCase() === "ADMIN");
+  const displayName =
+    user?.fullName || user?.displayName || user?.hoTen || user?.username || user?.email || "Người dùng";
+  const secondaryIdentity = user?.email || user?.username || "";
+  const avatarLetter = (displayName || secondaryIdentity || "U").slice(0, 1).toUpperCase();
 
-  /* Close user menu on outside click */
   useEffect(() => {
     function handleClick(e) {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) {
@@ -100,13 +107,16 @@ export function TopNavigation({
                   )}
                 >
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-teal-500 to-cyan-500 flex items-center justify-center text-white text-xs font-bold">
-                    {(user?.fullName || user?.email || "U")
-                      .slice(0, 1)
-                      .toUpperCase()}
+                    {avatarLetter}
                   </div>
                   <span className="hidden sm:inline text-sm font-semibold text-slate-700 max-w-[140px] truncate">
-                    {user?.fullName || user?.username || "Người dùng"}
+                    {displayName}
                   </span>
+                  {isAdmin && (
+                    <span className="hidden md:inline-flex h-5 items-center rounded-full border border-teal-200 bg-teal-50 px-2 text-[10px] font-black tracking-wide text-teal-700">
+                      ADMIN
+                    </span>
+                  )}
                   <ChevronDown
                     size={14}
                     className={clsx(
@@ -120,14 +130,23 @@ export function TopNavigation({
                   <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-[var(--radius-lg)] border border-[var(--color-border)] shadow-[var(--shadow-card)] py-2 animate-[fade-in_0.15s_ease-out]">
                     <div className="px-4 py-3 border-b border-slate-100">
                       <p className="text-sm font-bold text-slate-900 m-0">
-                        {user?.fullName || user?.username || "Người dùng"}
+                        {displayName}
                       </p>
-                      <p className="text-xs text-slate-500 mt-0.5 m-0">
-                        {user?.email}
-                      </p>
-                      <p className="text-xs text-teal-600 font-semibold mt-1 m-0">
-                        {roles.join(", ") || "USER"}
-                      </p>
+                      {secondaryIdentity && (
+                        <p className="text-xs text-slate-500 mt-0.5 m-0">
+                          {secondaryIdentity}
+                        </p>
+                      )}
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {roleLabels.map((role) => (
+                          <span
+                            key={role}
+                            className="inline-flex h-5 items-center rounded-full border border-teal-200 bg-teal-50 px-2 text-[10px] font-black tracking-wide text-teal-700"
+                          >
+                            {role}
+                          </span>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="md:hidden px-4 py-2 border-b border-slate-100 flex flex-wrap gap-1.5">
@@ -153,10 +172,10 @@ export function TopNavigation({
           </div>
 
           <nav
-            className="mt-3 hidden lg:flex items-center gap-1.5 overflow-x-auto rounded-[22px] border border-teal-200/70 bg-white/75 p-1.5 shadow-[0_12px_32px_rgba(15,23,42,0.06)]"
+            className="relative mt-3 hidden lg:flex items-center gap-1.5 overflow-visible rounded-[22px] border border-teal-200/70 bg-white/75 p-1.5 shadow-[0_12px_32px_rgba(15,23,42,0.06)]"
             aria-label="Điều hướng chính"
           >
-            {allItems.map((item) => {
+            {primaryItems.map((item) => {
               const Icon = item.icon;
               const isActive = activePage === item.id;
               return (
@@ -180,7 +199,6 @@ export function TopNavigation({
         </div>
       </header>
 
-      {/* Mobile drawer */}
       <MobileDrawer
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}

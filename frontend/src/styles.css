@@ -293,7 +293,7 @@ nav {
   height: 132px;
   border-radius: 8px;
   border: 1px solid #e4e7ec;
-  object-fit: cover;
+  object-fit: contain;
   background: #f8fafc;
 }
 

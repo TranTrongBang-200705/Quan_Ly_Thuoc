@@ -217,6 +217,10 @@ export const api = {
     return request(`/du-doan/admin/lich-su${toQuery(params)}`);
   },
 
+  getAdminFeedbacks(params = {}) {
+    return request(`/admin/feedbacks${toQuery(params)}`);
+  },
+
   getAdminLinks(params = {}) {
     return request(`/admin/links${toQuery(mapLinkParams(params))}`);
   },

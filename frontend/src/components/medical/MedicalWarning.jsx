@@ -2,7 +2,7 @@ import { ShieldAlert } from "lucide-react";
 import clsx from "clsx";
 
 export const MEDICAL_WARNING =
-  "Thông tin chỉ phục vụ học tập, nghiên cứu và tham khảo. Không dùng để tự chẩn đoán, kê đơn hoặc thay thế tư vấn của bác sĩ/dược sĩ.";
+  "Kết quả chỉ phục vụ học tập, nghiên cứu và tham khảo, không thay thế tư vấn của bác sĩ hoặc dược sĩ.";
 
 export function MedicalWarning({ compact = false, className = "" }) {
   return (

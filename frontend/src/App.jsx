@@ -1,24 +1,17 @@
 import {
   Activity,
   Beaker,
-  ClipboardList,
-  Database,
   History,
-  LayoutDashboard,
-  Link2,
   MessageSquare,
-  Pill,
-  Settings,
-  Stethoscope,
+  Search,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { api, clearStoredAuth, getStoredAuth, saveStoredAuth } from "./api";
 import { AppLayout } from "./components/layout";
-import { Alert, LoadingSkeleton } from "./components/ui";
-import { AdminCatalogPage, AdminDashboardPage, AdminLookupsPage } from "./pages/AdminPages";
+import { LoadingSkeleton } from "./components/ui";
 import { AuthPage } from "./pages/AuthPage";
-import { DiseasesPage, DrugsPage, LinksPage } from "./pages/CatalogPages";
+import { CatalogPage } from "./pages/CatalogPages";
 import { DashboardPage } from "./pages/DashboardPage";
 import { FeedbackPage } from "./pages/FeedbackPage";
 import { HistoryPage } from "./pages/HistoryPage";
@@ -30,24 +23,14 @@ const PAGE_META = {
     subtitle: "Clinical intelligence dashboard cho dữ liệu thuốc-bệnh.",
     eyebrow: "Medical AI",
   },
-  drugs: {
-    title: "Tra cứu thuốc",
-    subtitle: "Catalog thuốc, hoạt chất, công dụng, ảnh và thông tin an toàn.",
-    eyebrow: "Drug discovery",
-  },
-  diseases: {
-    title: "Tra cứu bệnh/chỉ định",
-    subtitle: "Clinical indications, nhóm bệnh và mô tả liên quan.",
-    eyebrow: "Disease knowledge",
-  },
-  links: {
-    title: "Liên kết thuốc-bệnh",
-    subtitle: "Evidence graph giữa thuốc, bệnh, loại liên kết và mức tin cậy.",
-    eyebrow: "Evidence graph",
+  catalog: {
+    title: "Tra cứu thuốc/bệnh",
+    subtitle: "Catalog thuốc, bệnh/chỉ định, tìm kiếm và xem chi tiết dữ liệu y dược.",
+    eyebrow: "Medical catalog",
   },
   prediction: {
-    title: "Dự đoán AI",
-    subtitle: "Phân tích liên kết thuốc-bệnh bằng AI và dữ liệu DataThuoc.",
+    title: "Dự đoán liên kết thuốc-bệnh bằng AI",
+    subtitle: "Mô hình RandomForest chấm điểm khả năng liên kết giữa thuốc và bệnh/chỉ định từ dữ liệu huấn luyện.",
     eyebrow: "AI workflow",
   },
   history: {
@@ -60,61 +43,99 @@ const PAGE_META = {
     subtitle: "Gửi đánh giá để cải thiện chất lượng dự đoán.",
     eyebrow: "Feedback loop",
   },
-  "admin-dashboard": {
-    title: "Tổng quan quản trị",
-    subtitle: "Giám sát dữ liệu, liên kết và hoạt động dự đoán.",
-    eyebrow: "Admin",
-  },
-  "admin-catalog": {
-    title: "Dữ liệu thuốc/bệnh",
-    subtitle: "Kiểm tra nhanh catalog DataThuoc.",
-    eyebrow: "Admin catalog",
-  },
-  "admin-links": {
-    title: "Quản trị liên kết",
-    subtitle: "Theo dõi liên kết thuốc-bệnh theo bộ lọc.",
-    eyebrow: "Admin evidence",
-  },
-  "admin-predictions": {
-    title: "Theo dõi dự đoán",
-    subtitle: "Giám sát các yêu cầu dự đoán trong hệ thống.",
-    eyebrow: "Admin monitoring",
-  },
-  "admin-lookups": {
-    title: "Danh mục hệ thống",
-    subtitle: "Lookup phục vụ nghiệp vụ và form lâm sàng.",
-    eyebrow: "Taxonomy",
-  },
+};
+
+const ADMIN_FEEDBACK_META = {
+  title: "Quản lý phản hồi",
+  subtitle: "Theo dõi phản hồi của người dùng về kết quả dự đoán.",
+  eyebrow: "Feedback admin",
 };
 
 const USER_NAV = [
   { id: "dashboard", label: "Tổng quan", icon: Activity },
-  { id: "drugs", label: "Tra cứu thuốc", icon: Pill },
-  { id: "diseases", label: "Bệnh/chỉ định", icon: Stethoscope },
-  { id: "links", label: "Liên kết", icon: Link2 },
+  { id: "catalog", label: "Tra cứu thuốc/bệnh", icon: Search },
   { id: "prediction", label: "Dự đoán AI", icon: Beaker },
   { id: "history", label: "Lịch sử", icon: History },
   { id: "feedback", label: "Phản hồi", icon: MessageSquare },
 ];
 
-const ADMIN_NAV = [
-  { id: "admin-dashboard", label: "Tổng quan quản trị", icon: LayoutDashboard },
-  { id: "admin-catalog", label: "Dữ liệu thuốc/bệnh", icon: Database },
-  { id: "admin-links", label: "Quản trị liên kết", icon: Link2 },
-  { id: "admin-predictions", label: "Theo dõi dự đoán", icon: ClipboardList },
-  { id: "admin-lookups", label: "Danh mục hệ thống", icon: Settings },
-];
+const USER_PAGE_IDS = new Set(USER_NAV.map((item) => item.id));
+const LEGACY_ADMIN_PAGE_IDS = new Set([
+  "admin-dashboard",
+  "admin-links",
+  "admin-predictions",
+  "admin-lookups",
+  "admin-catalog",
+  "links",
+]);
+
+function readPageFromHash() {
+  if (typeof window === "undefined") return "dashboard";
+  const raw = window.location.hash.replace(/^#\/?/, "").trim();
+  if (raw) return raw;
+  const pathPage = window.location.pathname.replace(/^\/+/, "").split("/")[0];
+  return pathPage || "dashboard";
+}
+
+function pageIdOnly(pageId) {
+  return String(pageId || "").split("?")[0];
+}
+
+function catalogTabFromPage(pageId) {
+  const value = String(pageId || "").toLowerCase();
+  return value.includes("disease") || value.includes("benh") || value.includes("tab=diseases")
+    ? "diseases"
+    : "drugs";
+}
+
+function roleName(role) {
+  if (typeof role === "string") return role;
+  return role?.roleCode || role?.code || role?.name || role?.role || "";
+}
 
 export default function App() {
   const [auth, setAuth] = useState(() => getStoredAuth());
   const [authChecked, setAuthChecked] = useState(false);
-  const [activePage, setActivePage] = useState("dashboard");
+  const [activePage, setActivePage] = useState(() => readPageFromHash());
+  const [catalogInitialTab, setCatalogInitialTab] = useState(() =>
+    catalogTabFromPage(readPageFromHash()),
+  );
   const [health, setHealth] = useState(null);
   const healthToastRef = useRef({ backend: false, ai: false });
 
   const user = auth?.user;
-  const roles = user?.roles ?? [];
-  const isAdmin = roles.includes("ADMIN");
+  const roles = useMemo(
+    () => (user?.roles ?? []).map(roleName).filter(Boolean),
+    [user?.roles],
+  );
+  const isAdmin =
+    roles.some((role) => role.toUpperCase() === "ADMIN") ||
+    user?.isAdmin === true ||
+    user?.admin === true;
+
+  const normalizePageForRole = useCallback((pageId) => {
+    const basePageId = pageIdOnly(pageId);
+    if (basePageId === "drugs" || basePageId === "diseases") return "catalog";
+    if (LEGACY_ADMIN_PAGE_IDS.has(basePageId) || basePageId.startsWith("admin-")) {
+      return "dashboard";
+    }
+    if (USER_PAGE_IDS.has(basePageId)) return basePageId;
+    return "dashboard";
+  }, []);
+
+  const navigate = useCallback(
+    (pageId) => {
+      const nextPage = normalizePageForRole(pageId);
+      if (nextPage === "catalog") {
+        setCatalogInitialTab(catalogTabFromPage(pageId));
+      }
+      setActivePage(nextPage);
+      if (typeof window !== "undefined" && window.location.hash !== `#${nextPage}`) {
+        window.history.replaceState(null, "", `#${nextPage}`);
+      }
+    },
+    [normalizePageForRole],
+  );
 
   useEffect(() => {
     async function verifySession() {
@@ -174,22 +195,37 @@ export default function App() {
     };
   }, [authChecked, auth?.accessToken]);
 
-  const navItems = useMemo(() => {
-    const groups = [{ label: "Clinical workspace", items: USER_NAV }];
-    if (isAdmin) groups.push({ label: "Administration", items: ADMIN_NAV });
-    return groups;
-  }, [isAdmin]);
+  const navItems = useMemo(
+    () => [{ label: "Điều hướng chính", items: USER_NAV }],
+    [],
+  );
+
+  const currentPageMeta = useMemo(() => {
+    if (activePage === "feedback" && isAdmin) return ADMIN_FEEDBACK_META;
+    return PAGE_META[activePage] || PAGE_META.dashboard;
+  }, [activePage, isAdmin]);
 
   useEffect(() => {
-    if (!isAdmin && activePage.startsWith("admin-")) {
-      setActivePage("dashboard");
+    const nextPage = normalizePageForRole(activePage);
+    if (nextPage !== activePage) {
+      navigate(nextPage);
     }
-  }, [isAdmin, activePage]);
+  }, [activePage, navigate, normalizePageForRole]);
+
+  useEffect(() => {
+    function syncHashPage() {
+      navigate(readPageFromHash());
+    }
+
+    syncHashPage();
+    window.addEventListener("hashchange", syncHashPage);
+    return () => window.removeEventListener("hashchange", syncHashPage);
+  }, [navigate]);
 
   function logout() {
     clearStoredAuth();
     setAuth(null);
-    setActivePage("dashboard");
+    navigate("dashboard");
   }
 
   if (!authChecked) {
@@ -206,7 +242,7 @@ export default function App() {
         onAuthenticated={(result) => {
           saveStoredAuth(result);
           setAuth(result);
-          setActivePage("dashboard");
+          navigate("dashboard");
         }}
       />
     );
@@ -215,31 +251,17 @@ export default function App() {
   function renderPage() {
     switch (activePage) {
       case "dashboard":
-        return <DashboardPage onNavigate={setActivePage} health={health} />;
-      case "drugs":
-        return <DrugsPage />;
-      case "diseases":
-        return <DiseasesPage />;
-      case "links":
-        return <LinksPage />;
+        return <DashboardPage onNavigate={navigate} health={health} />;
+      case "catalog":
+        return <CatalogPage initialTab={catalogInitialTab} />;
       case "prediction":
         return <PredictionPage user={user} health={health} />;
       case "history":
         return <HistoryPage />;
       case "feedback":
-        return <FeedbackPage user={user} />;
-      case "admin-dashboard":
-        return isAdmin ? <AdminDashboardPage /> : <Alert tone="danger">Bạn không có quyền truy cập trang quản trị.</Alert>;
-      case "admin-catalog":
-        return isAdmin ? <AdminCatalogPage /> : <Alert tone="danger">Bạn không có quyền truy cập trang quản trị.</Alert>;
-      case "admin-links":
-        return isAdmin ? <LinksPage admin /> : <Alert tone="danger">Bạn không có quyền truy cập trang quản trị.</Alert>;
-      case "admin-predictions":
-        return isAdmin ? <HistoryPage admin /> : <Alert tone="danger">Bạn không có quyền truy cập trang quản trị.</Alert>;
-      case "admin-lookups":
-        return isAdmin ? <AdminLookupsPage /> : <Alert tone="danger">Bạn không có quyền truy cập trang quản trị.</Alert>;
+        return <FeedbackPage user={user} roles={roles} isAdmin={isAdmin} />;
       default:
-        return <DashboardPage onNavigate={setActivePage} health={health} />;
+        return <DashboardPage onNavigate={navigate} health={health} />;
     }
   }
 
@@ -247,8 +269,8 @@ export default function App() {
     <AppLayout
       navItems={navItems}
       activePage={activePage}
-      pageMeta={PAGE_META[activePage] || PAGE_META.dashboard}
-      onNavigate={setActivePage}
+      pageMeta={currentPageMeta}
+      onNavigate={navigate}
       user={user}
       roles={roles}
       onLogout={logout}

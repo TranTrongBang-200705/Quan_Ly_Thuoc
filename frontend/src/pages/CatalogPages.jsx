@@ -1,5 +1,5 @@
 import { Link2, Pill, Search, Stethoscope } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { api } from "../api";
 import {
@@ -20,6 +20,215 @@ import {
 } from "../components/ui";
 import { useLoad } from "../hooks/useLoad";
 import { formatScore, getItems, getTotal, pageCount, truncate } from "../utils/format";
+import { filterAndRankCatalog } from "../utils/search";
+
+const CATALOG_PAGE_SIZE = 20000;
+const GROUP_LIMIT_STEP = 12;
+
+function useDebouncedValue(value, delay = 250) {
+  const [debounced, setDebounced] = useState(value);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setDebounced(value), delay);
+    return () => window.clearTimeout(timer);
+  }, [value, delay]);
+
+  return debounced;
+}
+
+function drugSearchFields(drug) {
+  return [
+    { value: drug.tenThuoc || drug.drugName || drug.activeName, weight: 1.45 },
+    { value: drug.tenThuocGoc || drug.tradeName, weight: 1.2 },
+    { value: drug.hoatChat, weight: 1.3 },
+    { value: drug.congDung || drug.knownIndications, weight: 1 },
+    { value: drug.tenNhomThuoc, weight: 0.9 },
+    { value: drug.dangBaoChe, weight: 0.55 },
+  ];
+}
+
+function diseaseSearchFields(disease) {
+  return [
+    { value: disease.tenBenh || disease.diseaseName, weight: 1.45 },
+    { value: disease.tenDongNghia, weight: 1.25 },
+    { value: disease.moTa || disease.description, weight: 1 },
+    { value: disease.trieuChung, weight: 1 },
+    { value: disease.thuocDieuTriDaBiet, weight: 0.75 },
+    { value: disease.tenNhomBenh, weight: 0.95 },
+  ];
+}
+
+function ResultGroup({
+  title,
+  icon: Icon,
+  items,
+  visibleCount,
+  onShowMore,
+  children,
+}) {
+  if (!items.length) return null;
+  const visibleItems = items.slice(0, visibleCount);
+  const remaining = items.length - visibleItems.length;
+
+  return (
+    <section className="space-y-3">
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="flex items-center gap-2 text-lg font-extrabold text-slate-900 m-0">
+            <Icon size={20} className="text-teal-600" />
+            {title}
+          </h2>
+          <p className="text-sm text-slate-500 mt-0.5 m-0">
+            {items.length} kết quả phù hợp
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {visibleItems.map(children)}
+      </div>
+
+      {remaining > 0 && (
+        <div className="flex justify-center pt-1">
+          <Button type="button" variant="secondary" onClick={onShowMore}>
+            Xem thêm {Math.min(GROUP_LIMIT_STEP, remaining)} kết quả
+          </Button>
+        </div>
+      )}
+    </section>
+  );
+}
+
+export function CatalogPage() {
+  const [keyword, setKeyword] = useState("");
+  const [drugVisibleCount, setDrugVisibleCount] = useState(GROUP_LIMIT_STEP);
+  const [diseaseVisibleCount, setDiseaseVisibleCount] = useState(GROUP_LIMIT_STEP);
+  const [detailDrug, setDetailDrug] = useState(null);
+  const [detailDisease, setDetailDisease] = useState(null);
+  const debouncedKeyword = useDebouncedValue(keyword, 250);
+  const query = debouncedKeyword.trim();
+
+  useEffect(() => {
+    setDrugVisibleCount(GROUP_LIMIT_STEP);
+    setDiseaseVisibleCount(GROUP_LIMIT_STEP);
+  }, [query]);
+
+  const drugs = useLoad(
+    () => api.getDrugs({ page: 1, pageSize: CATALOG_PAGE_SIZE }),
+    [],
+  );
+  const diseases = useLoad(
+    () => api.getDiseases({ page: 1, pageSize: CATALOG_PAGE_SIZE }),
+    [],
+  );
+
+  const drugItems = getItems(drugs.data);
+  const diseaseItems = getItems(diseases.data);
+  const drugResults = useMemo(
+    () => filterAndRankCatalog(drugItems, query, drugSearchFields),
+    [drugItems, query],
+  );
+  const diseaseResults = useMemo(
+    () => filterAndRankCatalog(diseaseItems, query, diseaseSearchFields),
+    [diseaseItems, query],
+  );
+  const loading = drugs.loading || diseases.loading;
+  const error = drugs.error || diseases.error;
+  const totalMatches = drugResults.total + diseaseResults.total;
+  const aliasUsed = drugResults.aliasUsed || diseaseResults.aliasUsed;
+
+  return (
+    <section className="space-y-5">
+      <Card className="!p-4">
+        <form className="flex flex-col gap-3" onSubmit={(event) => event.preventDefault()}>
+          <Input
+            icon={Search}
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+            placeholder="Nhập tên thuốc, hoạt chất, bệnh, triệu chứng hoặc chỉ định..."
+          />
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-slate-500 m-0">
+              {query
+                ? (
+                  <>
+                    Hiển thị <strong className="text-slate-700">{totalMatches}</strong> kết quả phù hợp cho &ldquo;{query}&rdquo;
+                  </>
+                )
+                : (
+                  <>
+                    Nhập từ khóa để tìm trong <strong className="text-slate-700">{drugItems.length}</strong> thuốc và{" "}
+                    <strong className="text-slate-700">{diseaseItems.length}</strong> bệnh/chỉ định.
+                  </>
+                )}
+            </p>
+            {aliasUsed && query && (
+              <span className="text-xs font-semibold text-teal-600">
+                Đã mở rộng tìm kiếm theo thuật ngữ liên quan
+              </span>
+            )}
+          </div>
+        </form>
+      </Card>
+
+      {error && (
+        <Alert tone="danger">
+          Không thể tải dữ liệu catalog. Vui lòng kiểm tra kết nối Backend hoặc thử lại.
+        </Alert>
+      )}
+
+      {loading ? (
+        <LoadingSkeleton count={6} />
+      ) : !query ? (
+        <EmptyState icon={Search} title="Sẵn sàng tra cứu thuốc/bệnh">
+          Nhập tên thuốc, hoạt chất, bệnh, triệu chứng hoặc chỉ định để tìm kiếm
+          trong toàn bộ catalog.
+        </EmptyState>
+      ) : totalMatches === 0 ? (
+        <EmptyState icon={Search} title="Không tìm thấy kết quả phù hợp">
+          Thử đổi từ khóa, nhập không dấu hoặc dùng thuật ngữ y khoa liên quan.
+        </EmptyState>
+      ) : (
+        <div className="space-y-7">
+          <ResultGroup
+            title="Thuốc phù hợp"
+            icon={Pill}
+            items={drugResults.items}
+            visibleCount={drugVisibleCount}
+            onShowMore={() => setDrugVisibleCount((current) => current + GROUP_LIMIT_STEP)}
+          >
+            {(drug) => (
+              <MedicineCard
+                key={drug.thuocId || drug.drugId}
+                drug={drug}
+                onDetail={setDetailDrug}
+              />
+            )}
+          </ResultGroup>
+
+          <ResultGroup
+            title="Bệnh/chỉ định phù hợp"
+            icon={Stethoscope}
+            items={diseaseResults.items}
+            visibleCount={diseaseVisibleCount}
+            onShowMore={() => setDiseaseVisibleCount((current) => current + GROUP_LIMIT_STEP)}
+          >
+            {(disease) => (
+              <DiseaseCard
+                key={disease.benhId || disease.diseaseId}
+                disease={disease}
+                onDetail={setDetailDisease}
+              />
+            )}
+          </ResultGroup>
+        </div>
+      )}
+
+      <DrugDetailModal drug={detailDrug} onClose={() => setDetailDrug(null)} />
+      <DiseaseDetailModal disease={detailDisease} onClose={() => setDetailDisease(null)} />
+    </section>
+  );
+}
 
 /* ── Pagination ── */
 function Pagination({ page, total, pageSize, onPage }) {
@@ -53,7 +262,7 @@ function Pagination({ page, total, pageSize, onPage }) {
 /* ══════════════════════════════════════════════
    DRUGS PAGE
    ══════════════════════════════════════════════ */
-export function DrugsPage() {
+export function DrugsPage({ embedded = false }) {
   const [keyword, setKeyword] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -165,7 +374,7 @@ export function DrugsPage() {
 /* ══════════════════════════════════════════════
    DISEASES PAGE
    ══════════════════════════════════════════════ */
-export function DiseasesPage() {
+export function DiseasesPage({ embedded = false }) {
   const [keyword, setKeyword] = useState("");
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
@@ -279,6 +488,18 @@ const CONFIDENCE_LEVELS = ["Cao", "Trung bình", "Thấp"];
    LINKS PAGE
    ══════════════════════════════════════════════ */
 export function LinksPage({ admin = false }) {
+  if (!admin) {
+    return (
+      <Alert tone="danger">
+        Bạn không có quyền truy cập dữ liệu liên kết thuốc-bệnh nội bộ.
+      </Alert>
+    );
+  }
+
+  return <AdminLinksPage />;
+}
+
+function AdminLinksPage() {
   /* Filter state */
   const [drugKeyword, setDrugKeyword] = useState("");
   const [diseaseKeyword, setDiseaseKeyword] = useState("");
@@ -286,8 +507,8 @@ export function LinksPage({ admin = false }) {
   const [params, setParams] = useState({});
 
   const state = useLoad(
-    () => (admin ? api.getAdminLinks(params) : api.getLinks(params)),
-    [JSON.stringify(params), admin]
+    () => api.getAdminLinks(params),
+    [JSON.stringify(params)]
   );
 
   /* Load drug/disease lists for select filters */

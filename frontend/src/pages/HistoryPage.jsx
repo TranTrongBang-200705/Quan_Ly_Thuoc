@@ -363,7 +363,7 @@ export function HistoryPage({ admin = false }) {
                   )}
                   {(detail.soKetQuaToiDa ?? detail.topK) != null && (
                     <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                      <span className="text-slate-400">Top K</span>
+                      <span className="text-slate-400">Số kết quả muốn xem</span>
                       <strong className="block text-slate-800 mt-0.5">
                         {detail.soKetQuaToiDa ?? detail.topK}
                       </strong>

@@ -76,6 +76,7 @@ def normalize_prediction_type(value: str) -> str:
         "DISEASE_TO_DRUG": "DISEASE_TO_DRUG",
         "BENH_TIM_THUOC": "DISEASE_TO_DRUG",
         "TU_BENH_TIM_THUOC": "DISEASE_TO_DRUG",
+        "PAIR_CHECK": "PAIR_PREDICTION",
         "PAIR_PREDICTION": "PAIR_PREDICTION",
         "KIEM_TRA_CAP": "PAIR_PREDICTION",
         "KIEM_TRA_CAP_THUOC_BENH": "PAIR_PREDICTION",
@@ -87,8 +88,6 @@ def normalize_prediction_type(value: str) -> str:
 
 def validate_request(req: PredictionCreateRequest) -> str:
     prediction_type = normalize_prediction_type(req.prediction_type)
-    if not req.contact_email:
-        raise AppError("Vui long nhap email lien he.")
     if not req.medical_warning_accepted:
         raise AppError("Vui long xac nhan canh bao y te truoc khi du doan.")
     if prediction_type == "DRUG_TO_DISEASE" and req.drug_id is None:

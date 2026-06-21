@@ -198,7 +198,7 @@ export function AuthPage({ onAuthenticated }) {
               value={form.email}
               onChange={(e) => update("email", e.target.value)}
               placeholder={
-                isLogin ? "admin hoặc user@example.com" : "user@example.com"
+                isLogin ? "Nhập email hoặc username" : "Nhập email của bạn"
               }
             />
 

@@ -10,7 +10,7 @@ function InfoCell({ label, value }) {
       <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wide">
         {label}
       </span>
-      <p className="text-sm text-slate-800 font-medium mt-0.5 m-0 leading-snug">
+      <p className="text-sm text-slate-800 font-medium mt-0.5 m-0 leading-snug break-words">
         {value}
       </p>
     </div>
@@ -32,13 +32,13 @@ export function DrugDetailModal({ drug, onClose }) {
     >
       <div className="space-y-5">
         {/* Image + code + badges */}
-        <div className="flex gap-4 items-start">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
           <DrugImage
             src={image}
             alt={name}
-            className="w-24 h-24 shrink-0 !rounded-2xl"
+            className="h-44 w-full shrink-0 !rounded-2xl sm:h-36 sm:w-40"
           />
-          <div className="min-w-0 space-y-2">
+          <div className="min-w-0 space-y-2 break-words">
             <div className="flex flex-wrap gap-1.5">
               <Badge tone="cyan">
                 {drug.maThuoc || drug.drugCode || `ID ${drug.thuocId || drug.drugId}`}
@@ -90,7 +90,7 @@ export function DrugDetailModal({ drug, onClose }) {
             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide m-0">
               Công dụng / Chỉ định
             </h4>
-            <p className="text-sm text-slate-700 leading-relaxed m-0 whitespace-pre-line">
+            <p className="text-sm text-slate-700 leading-relaxed m-0 whitespace-pre-line break-words">
               {drug.congDung || drug.knownIndications}
             </p>
           </div>
@@ -103,7 +103,7 @@ export function DrugDetailModal({ drug, onClose }) {
               <Tag size={12} />
               Tác dụng phụ
             </h4>
-            <p className="text-sm text-amber-800 leading-relaxed m-0 bg-amber-50/60 border border-amber-200/50 rounded-xl p-3">
+            <p className="text-sm text-amber-800 leading-relaxed m-0 bg-amber-50/60 border border-amber-200/50 rounded-xl p-3 whitespace-pre-line break-words">
               {drug.tacDungPhu}
             </p>
           </div>
@@ -115,7 +115,7 @@ export function DrugDetailModal({ drug, onClose }) {
             <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wide m-0">
               Chống chỉ định
             </h4>
-            <p className="text-sm text-red-800 leading-relaxed m-0 bg-red-50/60 border border-red-200/50 rounded-xl p-3">
+            <p className="text-sm text-red-800 leading-relaxed m-0 bg-red-50/60 border border-red-200/50 rounded-xl p-3 whitespace-pre-line break-words">
               {drug.chongChiDinh}
             </p>
           </div>
