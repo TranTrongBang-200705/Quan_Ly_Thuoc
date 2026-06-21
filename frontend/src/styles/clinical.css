@@ -1,0 +1,821 @@
+/* ═══════════════════════════════════════════════════════
+   DrugDiseaseML – Legacy Clinical CSS
+   ═══════════════════════════════════════════════════════
+   This file retains styles for pages NOT yet refactored
+   to Tailwind (CatalogPages, PredictionPage, HistoryPage,
+   FeedbackPage, AdminPages). Base styles have moved to
+   app.css + Tailwind utilities in components.
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Shared Layout Classes (still used by legacy pages) ── */
+
+.page-stack {
+  display: grid;
+  gap: 16px;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.page-header h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  margin: 0;
+}
+
+.page-header p {
+  margin-top: 8px;
+  color: var(--color-muted-text);
+}
+
+.eyebrow {
+  display: inline-flex;
+  color: var(--color-teal-dark, #0f766e);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Legacy Card (compatibility for .card class in pages) ── */
+
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg, 20px);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+  min-width: 0;
+}
+
+/* ── Form Layouts ── */
+
+.form-grid,
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.filter-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: end;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.checkbox-field {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: #334155;
+  font-weight: 700;
+}
+
+.checkbox-field input {
+  width: 18px;
+  min-height: 18px;
+}
+
+/* ── Legacy Input/Select styles (for pages not yet refactored) ── */
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field > span {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.field-control {
+  position: relative;
+}
+
+.field-control.has-icon svg {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  color: #64748b;
+  transform: translateY(-50%);
+}
+
+.has-icon input,
+.has-icon select {
+  padding-left: 38px;
+}
+
+/* ── Legacy Alert classes (compatibility) ── */
+
+.alert {
+  border-radius: var(--radius-md, 14px);
+  padding: 12px 14px;
+  line-height: 1.5;
+}
+
+.alert-danger {
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+}
+
+.alert-warning {
+  color: #92400e;
+  border: 1px solid #fde68a;
+  background: #fffbeb;
+}
+
+.alert-success {
+  color: #065f46;
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+}
+
+.alert-info {
+  color: #075985;
+  border: 1px solid #bae6fd;
+  background: #f0f9ff;
+}
+
+/* ── Badge (legacy compatibility) ── */
+
+.badge {
+  min-height: 26px;
+  width: fit-content;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.badge-cyan { color: #155e75; background: #cffafe; }
+.badge-blue { color: #075985; background: #e0f2fe; }
+.badge-emerald { color: #065f46; background: #d1fae5; }
+.badge-amber { color: #92400e; background: #fef3c7; }
+.badge-slate { color: #334155; background: #e2e8f0; }
+
+.system-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* ── Button (legacy compatibility) ── */
+
+.btn {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 14px);
+  padding: 10px 14px;
+  font-weight: 850;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  color: #fff;
+  background: linear-gradient(135deg, #0f766e, #0891b2);
+}
+
+.btn-secondary {
+  color: #0f172a;
+  border-color: var(--color-border-strong, #dbe7ef);
+  background: #fff;
+}
+
+.btn-ghost {
+  color: #64748b;
+  background: transparent;
+}
+
+.btn-sm {
+  min-height: 34px;
+  padding: 7px 10px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* ── Catalog & Grid Layouts ── */
+
+.catalog-toolbar,
+.section-heading,
+.clinical-table-header,
+.prediction-summary,
+.result-heading,
+.lookup-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.stat-grid,
+.medicine-grid,
+.disease-grid,
+.lookup-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.stat-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.medicine-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.disease-grid,
+.lookup-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+/* ── Clinical Search ── */
+
+.clinical-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+/* ── Pagination ── */
+
+.pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Medicine Card ── */
+
+.medicine-card {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 14px;
+}
+
+.drug-image {
+  width: 100%;
+  height: 132px;
+  object-fit: cover;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md, 14px);
+  background: #f8fafc;
+}
+
+.drug-image-large { height: 220px; }
+
+.drug-image.placeholder {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  color: #0f766e;
+  background: #ecfeff;
+}
+
+.medicine-body {
+  display: grid;
+  gap: 16px;
+}
+
+.medicine-body h3,
+.disease-card h3,
+.prediction-result-card h3,
+.assistant-card h3,
+.prediction-form-card h3 {
+  margin: 6px 0 0;
+  line-height: 1.22;
+}
+
+.medicine-body p,
+.disease-card p,
+.prediction-result-card p,
+.assistant-card p,
+.prediction-form-card p,
+.section-heading p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.65;
+}
+
+.medicine-body small,
+.prediction-result-card small {
+  color: var(--color-muted-text);
+}
+
+.mini-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.mini-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #475569;
+  font-size: 13px;
+}
+
+.review-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.review-strip span {
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #065f46;
+  background: #dcfce7;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* ── Disease Card ── */
+
+.disease-card {
+  display: grid;
+  gap: 12px;
+}
+
+.disease-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md, 14px);
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.disease-card small {
+  display: flex;
+  gap: 6px;
+}
+
+/* ── Clinical Table ── */
+
+.clinical-table-card { overflow: hidden; }
+
+.clinical-table {
+  display: grid;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.clinical-table article {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) auto auto 90px minmax(220px, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 14px 0;
+  border-top: 1px solid #eef2f7;
+}
+
+/* ── Prediction Workspace ── */
+
+.prediction-workspace,
+.history-layout,
+.feedback-layout,
+.admin-catalog-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(300px, 0.75fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.assistant-card,
+.prediction-form-card {
+  display: grid;
+  gap: 16px;
+}
+
+.assistant-steps {
+  display: grid;
+  gap: 16px;
+}
+
+.assistant-steps span {
+  padding: 10px 12px;
+  border: 1px solid #dbeafe;
+  border-radius: var(--radius-md, 14px);
+  background: #f8fbff;
+  color: #334155;
+}
+
+/* ── Prediction Result ── */
+
+.prediction-result-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 126px minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  box-shadow: none;
+}
+
+.prediction-result-card .drug-image { height: 126px; }
+
+.prediction-result-body,
+.prediction-results-section,
+.prediction-results-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.rank-pill {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 1;
+  min-width: 36px;
+  border-radius: 999px;
+  padding: 5px 9px;
+  color: #fff;
+  background: rgba(15, 118, 110, 0.92);
+  font-size: 12px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.result-heading p {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.score-circle {
+  width: 74px;
+  height: 74px;
+  flex: 0 0 74px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border-radius: 50%;
+  color: #065f46;
+  background: #d1fae5;
+}
+
+.score-circle strong { line-height: 1; }
+.score-circle span { color: #047857; font-size: 11px; font-weight: 800; }
+
+/* ── Timeline (History) ── */
+
+.timeline-card {
+  display: grid;
+  gap: 16px;
+}
+
+.history-detail-card {
+  display: grid;
+  gap: 16px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.timeline-dot {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #075985;
+  background: #e0f2fe;
+}
+
+.timeline-item span,
+.timeline-item small {
+  display: block;
+  color: var(--color-muted-text);
+}
+
+/* ── Feedback ── */
+
+.feedback-preview {
+  display: grid;
+  gap: 16px;
+}
+
+/* ── Admin / Lookups ── */
+
+.lookup-card ul {
+  display: grid;
+  gap: 9px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.lookup-card li {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.compact-card-list {
+  display: grid;
+  gap: 16px;
+}
+
+code {
+  color: var(--color-teal-dark, #0f766e);
+  font-weight: 900;
+}
+
+/* ── Legacy empty-state/skeleton (still used by some pages) ── */
+
+.empty-state {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  color: var(--color-muted-text);
+  text-align: center;
+}
+
+.empty-state h3,
+.empty-state p { margin: 0; }
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.skeleton-row { grid-template-columns: 1fr; }
+
+.skeleton-card {
+  min-height: 142px;
+  display: grid;
+  gap: 12px;
+  padding: 18px;
+  border-radius: var(--radius-lg, 20px);
+  background: #fff;
+  border: 1px solid var(--color-border);
+}
+
+.skeleton-card span,
+.skeleton-card strong,
+.skeleton-card p {
+  display: block;
+  margin: 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e2e8f0, #f8fafc, #e2e8f0);
+  background-size: 220% 100%;
+  animation: skeleton 1.2s ease-in-out infinite;
+}
+
+.skeleton-card span { width: 42px; height: 42px; }
+.skeleton-card strong { width: 70%; height: 18px; }
+.skeleton-card p { width: 100%; height: 12px; }
+
+@keyframes skeleton {
+  0% { background-position: 0% 0; }
+  100% { background-position: -220% 0; }
+}
+
+/* ── Medical Warning (legacy class) ── */
+
+.medical-warning {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  border-radius: var(--radius-lg, 20px);
+  background: #ecfdf5;
+  padding: 16px;
+  line-height: 1.55;
+}
+
+.medical-warning p { margin: 0; }
+.medical-warning.compact { margin-top: 14px; padding: 12px; }
+
+/* ── Status line (legacy) ── */
+
+.status-line {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.status-row,
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── Stat card legacy ── */
+
+.stat-card {
+  display: grid;
+  gap: 6px;
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md, 14px);
+  color: #0f766e;
+  background: #ccfbf1;
+}
+
+.stat-card strong { font-size: 34px; }
+
+/* ── Dashboard grid (legacy) ── */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr 1.1fr;
+  gap: 16px;
+}
+
+.activity-list {
+  display: grid;
+  gap: 16px;
+}
+
+.activity-list button {
+  display: grid;
+  gap: 4px;
+  border: 1px solid #eef2f7;
+  border-radius: var(--radius-md, 14px);
+  padding: 12px;
+  background: #fff;
+  text-align: left;
+}
+
+.card,
+.medicine-card,
+.disease-card,
+.prediction-result-card,
+.clinical-table article,
+.timeline-item {
+  overflow-wrap: anywhere;
+}
+
+/* ── Hero panel (legacy) ── */
+
+.hero-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  gap: 24px;
+  align-items: center;
+  padding: 28px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(20, 184, 166, 0.13), rgba(6, 182, 212, 0.08)),
+    #fff;
+}
+
+.hero-panel h2 {
+  margin-top: 8px;
+  font-size: clamp(34px, 5vw, 54px);
+}
+
+.hero-panel p {
+  margin-top: 12px;
+  max-width: 760px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.hero-visual {
+  min-height: 210px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 8px;
+  border: 1px solid rgba(20, 184, 166, 0.22);
+  border-radius: var(--radius-md, 14px);
+  color: #0f766e;
+  background: rgba(236, 253, 245, 0.8);
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════════ */
+
+@media (max-width: 1180px) {
+  .stat-grid,
+  .medicine-grid,
+  .disease-grid,
+  .dashboard-grid,
+  .lookup-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prediction-workspace,
+  .history-layout,
+  .feedback-layout,
+  .admin-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 820px) {
+  .hero-panel,
+  .stat-grid,
+  .medicine-grid,
+  .disease-grid,
+  .dashboard-grid,
+  .lookup-grid,
+  .skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-visual { min-height: 160px; }
+
+  .form-grid,
+  .filter-grid,
+  .clinical-search,
+  .clinical-table article,
+  .timeline-item,
+  .prediction-result-card,
+  .medicine-card {
+    grid-template-columns: 1fr;
+  }
+
+  .prediction-result-card .drug-image,
+  .drug-image {
+    height: 190px;
+  }
+
+  .catalog-toolbar,
+  .section-heading,
+  .page-header,
+  .result-heading {
+    display: grid;
+  }
+
+  .detail-modal {
+    width: min(94vw, 680px);
+    max-height: 88vh;
+  }
+
+  .detail-modal-body {
+    max-height: calc(88vh - 76px);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 16px;
+    border-radius: var(--radius-md, 14px);
+  }
+
+  .btn {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .status-row,
+  .badge-row {
+    gap: 6px;
+  }
+
+  .medical-warning {
+    padding: 13px;
+    border-radius: var(--radius-md, 14px);
+  }
+}
