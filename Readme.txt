@@ -1,1 +1,0 @@
-Thanh vien nhom: Bang, My, Khoa, Hieu
