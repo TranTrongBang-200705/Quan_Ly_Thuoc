@@ -13,18 +13,6 @@ import {
   Target,
 } from "lucide-react";
 import { useMemo } from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import { api } from "../api";
 import { MedicalWarning, StatCard } from "../components/medical";
 import { Alert, Button, Card, EmptyState, LoadingSkeleton } from "../components/ui";
@@ -75,14 +63,23 @@ const TYPE_LABELS = {
 
 const TYPE_COLORS = ["#14b8a6", "#06b6d4", "#22c55e", "#f59e0b"];
 
-function toDateKey(value) {
-  if (!value) return "Chưa rõ ngày";
+function toDateBucket(value) {
+  if (!value) {
+    return { key: "unknown", label: "Chưa rõ ngày" };
+  }
+
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "Chưa rõ ngày";
-  return new Intl.DateTimeFormat("vi-VN", {
-    day: "2-digit",
-    month: "2-digit",
-  }).format(date);
+  if (Number.isNaN(date.getTime())) {
+    return { key: "unknown", label: "Chưa rõ ngày" };
+  }
+
+  return {
+    key: date.toISOString().slice(0, 10),
+    label: new Intl.DateTimeFormat("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+    }).format(date),
+  };
 }
 
 function buildAnalytics(items) {
@@ -91,8 +88,14 @@ function buildAnalytics(items) {
   const bySource = new Map();
 
   items.forEach((item) => {
-    const dateKey = toDateKey(item.ngayTao || item.createdAt);
-    byDate.set(dateKey, (byDate.get(dateKey) || 0) + 1);
+    const dateBucket = toDateBucket(item.ngayTao || item.createdAt);
+    const currentDate = byDate.get(dateBucket.key) || {
+      key: dateBucket.key,
+      date: dateBucket.label,
+      count: 0,
+    };
+    currentDate.count += 1;
+    byDate.set(dateBucket.key, currentDate);
 
     const type = item.kieuDuDoan || item.predictionType || "UNKNOWN";
     byType.set(type, (byType.get(type) || 0) + 1);
@@ -102,25 +105,87 @@ function buildAnalytics(items) {
   });
 
   return {
-    byDate: Array.from(byDate, ([date, count]) => ({ date, count })).slice(-10),
+    byDate: Array.from(byDate.values())
+      .sort((a, b) => a.key.localeCompare(b.key))
+      .slice(-10),
     byType: Array.from(byType, ([type, count]) => ({
       type,
       label: TYPE_LABELS[type] || type,
       count,
-    })),
+    })).sort((a, b) => b.count - a.count),
     bySource: Array.from(bySource, ([source, count]) => ({ source, count })),
   };
 }
 
-function AnalyticsTooltip({ active, payload, label }) {
-  if (!active || !payload?.length) return null;
-  const title = label || payload[0]?.name || payload[0]?.payload?.label || "Dữ liệu";
+function ActivityBarChart({ data }) {
+  const maxCount = Math.max(1, ...data.map((item) => item.count));
+
   return (
-    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 shadow-lg">
-      <p className="m-0 text-xs font-bold text-slate-800">{title}</p>
-      <p className="m-0 mt-1 text-xs text-slate-500">
-        {payload[0].value} yêu cầu dự đoán
-      </p>
+    <div className="h-64 min-w-0 rounded-xl border border-slate-100 bg-white px-3 py-4">
+      <div
+        className="grid h-full items-end gap-3"
+        style={{ gridTemplateColumns: `repeat(${data.length}, minmax(34px, 1fr))` }}
+      >
+        {data.map((item) => {
+          const height = Math.max(10, Math.round((item.count / maxCount) * 100));
+
+          return (
+            <div
+              key={item.key}
+              className="flex h-full min-w-0 flex-col items-center justify-end gap-2"
+              title={`${item.date}: ${item.count} yêu cầu dự đoán`}
+            >
+              <span className="text-xs font-bold text-slate-700">{item.count}</span>
+              <div className="flex min-h-0 w-full flex-1 items-end justify-center border-b border-slate-200">
+                <span
+                  className="block w-full max-w-12 rounded-t-lg bg-gradient-to-t from-teal-500 to-cyan-400 shadow-[0_8px_20px_rgba(20,184,166,0.20)]"
+                  style={{ height: `${height}%` }}
+                  aria-label={`${item.count} yêu cầu ngày ${item.date}`}
+                />
+              </div>
+              <span className="truncate text-[11px] font-semibold text-slate-400">{item.date}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function buildDonutGradient(items) {
+  const total = items.reduce((sum, item) => sum + item.count, 0);
+  if (!total) return "#e2e8f0";
+
+  let cursor = 0;
+  const segments = items.map((item, index) => {
+    const start = cursor;
+    const end = cursor + (item.count / total) * 100;
+    cursor = end;
+    const color = TYPE_COLORS[index % TYPE_COLORS.length];
+    return `${color} ${start}% ${end}%`;
+  });
+
+  return `conic-gradient(${segments.join(", ")})`;
+}
+
+function PredictionTypeDonut({ data }) {
+  const total = data.reduce((sum, item) => sum + item.count, 0);
+
+  return (
+    <div className="mt-3 flex justify-center">
+      <div
+        className="relative h-48 w-48 rounded-full shadow-[inset_0_0_0_1px_rgba(148,163,184,0.16)]"
+        style={{ background: buildDonutGradient(data) }}
+        role="img"
+        aria-label={`Phân bố ${total} yêu cầu dự đoán theo loại`}
+      >
+        <div className="absolute inset-10 grid place-items-center rounded-full bg-white text-center shadow-inner">
+          <span>
+            <strong className="block text-2xl font-black text-slate-900">{total}</strong>
+            <small className="text-xs font-semibold text-slate-400">yêu cầu</small>
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
@@ -253,17 +318,7 @@ export function DashboardPage({ onNavigate, health }) {
                 <strong className="text-sm text-slate-800">Lịch sử dự đoán theo ngày</strong>
                 <span className="text-xs text-slate-400">10 ngày gần nhất có dữ liệu</span>
               </div>
-              <div className="h-64 min-w-0">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={analytics.byDate} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
-                    <YAxis allowDecimals={false} tickLine={false} axisLine={false} tick={{ fill: "#64748b", fontSize: 12 }} />
-                    <Tooltip content={<AnalyticsTooltip />} cursor={{ fill: "rgba(20, 184, 166, 0.08)" }} />
-                    <Bar dataKey="count" radius={[8, 8, 0, 0]} fill="#14b8a6" />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <ActivityBarChart data={analytics.byDate} />
             </div>
 
             <div className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4 min-w-0">
@@ -274,25 +329,7 @@ export function DashboardPage({ onNavigate, health }) {
                 </p>
               ) : (
                 <>
-                  <div className="h-48 mt-2">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={analytics.byType}
-                          dataKey="count"
-                          nameKey="label"
-                          innerRadius={44}
-                          outerRadius={76}
-                          paddingAngle={4}
-                        >
-                          {analytics.byType.map((entry, index) => (
-                            <Cell key={entry.type} fill={TYPE_COLORS[index % TYPE_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip content={<AnalyticsTooltip />} />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
+                  <PredictionTypeDonut data={analytics.byType} />
                   <div className="grid gap-2">
                     {analytics.byType.map((item, index) => (
                       <div key={item.type} className="flex items-center justify-between gap-2 text-xs">
