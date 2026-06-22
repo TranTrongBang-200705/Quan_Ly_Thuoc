@@ -1,0 +1,586 @@
+[
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 24360,
+    "so_mau_test": 10441,
+    "phan_bo_nhan_train": {
+      "0": 10267,
+      "1": 14093
+    },
+    "phan_bo_nhan_test": {
+      "0": 4401,
+      "1": 6040
+    },
+    "accuracy": 0.9999042237333589,
+    "precision": 0.9998344644926337,
+    "recall": 1.0,
+    "f1": 0.9999172253952487,
+    "roc_auc": 0.9999998495224596,
+    "confusion_matrix": [
+      [
+        4400,
+        1
+      ],
+      [
+        0,
+        6040
+      ]
+    ],
+    "ten_kich_ban": "random_split_co_trung_khop_truc_tiep",
+    "kieu_chia": "ngau_nhien",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.282954746580604
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.26298462419660473
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.10464618310129437
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.07269362179596757
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.07051819368773188
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.04751188430511784
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.04622027220751411
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.026771649323429254
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.017356259015088492
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.010400071790304869
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 24360,
+    "so_mau_test": 10441,
+    "phan_bo_nhan_train": {
+      "0": 10267,
+      "1": 14093
+    },
+    "phan_bo_nhan_test": {
+      "0": 4401,
+      "1": 6040
+    },
+    "accuracy": 0.9973182645340485,
+    "precision": 0.9975173783515392,
+    "recall": 0.9978476821192053,
+    "f1": 0.9976825028968713,
+    "roc_auc": 0.9999369875299262,
+    "confusion_matrix": [
+      [
+        4386,
+        15
+      ],
+      [
+        13,
+        6027
+      ]
+    ],
+    "ten_kich_ban": "random_split_bo_trung_khop_truc_tiep",
+    "kieu_chia": "ngau_nhien",
+    "su_dung_trung_khop_truc_tiep": false,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.2887550458006476
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.1992974403733779
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.09128235996064817
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.08047042428668273
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.07108424375912936
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.038618282535066814
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.02708430474105757
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.023262840577791443
+      },
+      {
+        "dac_trung": "so_tu_ten_benh",
+        "do_quan_trong": 0.014242979455013252
+      },
+      {
+        "dac_trung": "do_dai_cong_dung",
+        "do_quan_trong": 0.013047307584070198
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 24465,
+    "so_mau_test": 10336,
+    "phan_bo_nhan_train": {
+      "0": 10282,
+      "1": 14183
+    },
+    "phan_bo_nhan_test": {
+      "0": 4386,
+      "1": 5950
+    },
+    "accuracy": 0.9999032507739938,
+    "precision": 0.9998319610149554,
+    "recall": 1.0,
+    "f1": 0.9999159734476094,
+    "roc_auc": 0.9999998850429365,
+    "confusion_matrix": [
+      [
+        4385,
+        1
+      ],
+      [
+        0,
+        5950
+      ]
+    ],
+    "ten_kich_ban": "thuoc_moi_co_trung_khop_truc_tiep",
+    "kieu_chia": "thuoc_moi",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.2665075451612783
+      },
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.2564986961526732
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.10963445610783573
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.08101921220374594
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.07191969476409973
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.04665327915266633
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.044221247832702794
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.028505580190367075
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.018148234470504558
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.008972971206258682
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 24227,
+    "so_mau_test": 10574,
+    "phan_bo_nhan_train": {
+      "0": 10162,
+      "1": 14065
+    },
+    "phan_bo_nhan_test": {
+      "0": 4506,
+      "1": 6068
+    },
+    "accuracy": 0.9938528466048799,
+    "precision": 0.98940159791293,
+    "recall": 1.0,
+    "f1": 0.9946725678223096,
+    "roc_auc": 0.996048903227543,
+    "confusion_matrix": [
+      [
+        4441,
+        65
+      ],
+      [
+        0,
+        6068
+      ]
+    ],
+    "ten_kich_ban": "benh_moi_co_trung_khop_truc_tiep",
+    "kieu_chia": "benh_moi",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.2857593908767108
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.2575611430554544
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.09542878140244469
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.07454667392406035
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.05959003135205088
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.05466139908674545
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.044412686284947475
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.025956819488990614
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.022904322536028452
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.011024179811977819
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 28186,
+    "so_mau_test": 12080,
+    "phan_bo_nhan_train": {
+      "0": 14093,
+      "1": 14093
+    },
+    "phan_bo_nhan_test": {
+      "0": 6040,
+      "1": 6040
+    },
+    "accuracy": 0.9948675496688741,
+    "precision": 0.9924217462932454,
+    "recall": 0.9973509933774835,
+    "f1": 0.9948802642444261,
+    "roc_auc": 0.9998919729397834,
+    "confusion_matrix": [
+      [
+        5994,
+        46
+      ],
+      [
+        16,
+        6024
+      ]
+    ],
+    "ten_kich_ban": "mau_am_kho_co_trung_khop_truc_tiep",
+    "kieu_chia": "ngau_nhien",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.23265254072503314
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.15780402044488456
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.09944205961647323
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.06509606350756145
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.054337933093110455
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.05165487090788995
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.046798891105971005
+      },
+      {
+        "dac_trung": "so_tu_ten_benh",
+        "do_quan_trong": 0.032506722959474176
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.03142422001021443
+      },
+      {
+        "dac_trung": "do_dai_cong_dung",
+        "do_quan_trong": 0.024251113663198424
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 28186,
+    "so_mau_test": 12080,
+    "phan_bo_nhan_train": {
+      "0": 14093,
+      "1": 14093
+    },
+    "phan_bo_nhan_test": {
+      "0": 6040,
+      "1": 6040
+    },
+    "accuracy": 0.9903145695364238,
+    "precision": 0.987810904299127,
+    "recall": 0.9928807947019868,
+    "f1": 0.990339360911568,
+    "roc_auc": 0.9996612264812946,
+    "confusion_matrix": [
+      [
+        5966,
+        74
+      ],
+      [
+        43,
+        5997
+      ]
+    ],
+    "ten_kich_ban": "mau_am_kho_bo_trung_khop_truc_tiep",
+    "kieu_chia": "ngau_nhien",
+    "su_dung_trung_khop_truc_tiep": false,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.2678146093477602
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.15387656312969025
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.08244572800609633
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.06515549938631109
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.06302474906829487
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.06158914536469658
+      },
+      {
+        "dac_trung": "so_tu_ten_benh",
+        "do_quan_trong": 0.04351532656846247
+      },
+      {
+        "dac_trung": "do_dai_cong_dung",
+        "do_quan_trong": 0.03133931483474877
+      },
+      {
+        "dac_trung": "so_tu_cong_dung",
+        "do_quan_trong": 0.02173460002224349
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_cong_dung_trieu_chung",
+        "do_quan_trong": 0.018922250299820875
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 80,
+    "so_mau_train": 28366,
+    "so_mau_test": 11900,
+    "phan_bo_nhan_train": {
+      "0": 14183,
+      "1": 14183
+    },
+    "phan_bo_nhan_test": {
+      "0": 5950,
+      "1": 5950
+    },
+    "accuracy": 0.9951260504201681,
+    "precision": 0.9931369266822899,
+    "recall": 0.9971428571428571,
+    "f1": 0.9951358604495136,
+    "roc_auc": 0.9999450321304992,
+    "confusion_matrix": [
+      [
+        5909,
+        41
+      ],
+      [
+        17,
+        5933
+      ]
+    ],
+    "ten_kich_ban": "mau_am_kho_thuoc_moi",
+    "kieu_chia": "thuoc_moi",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.2180393421183991
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.14884327709862788
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.10065538453077671
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.06563032278070922
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.060453664826099776
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.058672769752224255
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.041313586998163475
+      },
+      {
+        "dac_trung": "so_tu_ten_benh",
+        "do_quan_trong": 0.0346673221020022
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.03454906019753601
+      },
+      {
+        "dac_trung": "do_dai_cong_dung",
+        "do_quan_trong": 0.029155637580885085
+      }
+    ]
+  },
+  {
+    "so_cay_danh_gia": 40,
+    "so_mau_train": 30396,
+    "so_mau_test": 9870,
+    "phan_bo_nhan_train": {
+      "0": 16331,
+      "1": 14065
+    },
+    "phan_bo_nhan_test": {
+      "0": 3802,
+      "1": 6068
+    },
+    "accuracy": 0.9768996960486322,
+    "precision": 0.9831237590999338,
+    "recall": 0.9792353328938694,
+    "f1": 0.9811756935270806,
+    "roc_auc": 0.996707705447329,
+    "confusion_matrix": [
+      [
+        3700,
+        102
+      ],
+      [
+        126,
+        5942
+      ]
+    ],
+    "ten_kich_ban": "mau_am_kho_benh_moi",
+    "kieu_chia": "benh_moi",
+    "su_dung_trung_khop_truc_tiep": true,
+    "top_dac_trung": [
+      {
+        "dac_trung": "ten_benh_nam_trong_cong_dung",
+        "do_quan_trong": 0.20851981449642465
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.17927425650623754
+      },
+      {
+        "dac_trung": "so_tu_chung_ten_thuoc_thuoc_da_biet",
+        "do_quan_trong": 0.08918861960116725
+      },
+      {
+        "dac_trung": "ti_le_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.054621487608189356
+      },
+      {
+        "dac_trung": "so_tu_thuoc_dieu_tri_da_biet",
+        "do_quan_trong": 0.05303105136455055
+      },
+      {
+        "dac_trung": "do_dai_ten_benh",
+        "do_quan_trong": 0.048894314545299196
+      },
+      {
+        "dac_trung": "so_tu_ten_benh",
+        "do_quan_trong": 0.03906229388235558
+      },
+      {
+        "dac_trung": "so_tu_chung_cong_dung_benh",
+        "do_quan_trong": 0.030938445781495443
+      },
+      {
+        "dac_trung": "do_dai_cong_dung",
+        "do_quan_trong": 0.029425818008038212
+      },
+      {
+        "dac_trung": "so_tu_chung_hoat_chat_thuoc_da_biet",
+        "do_quan_trong": 0.029076348487810422
+      }
+    ]
+  }
+]

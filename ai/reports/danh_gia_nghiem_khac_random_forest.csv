@@ -1,0 +1,9 @@
+ten_kich_ban,kieu_chia,su_dung_trung_khop_truc_tiep,so_mau_train,so_mau_test,accuracy,precision,recall,f1,roc_auc,confusion_matrix
+random_split_co_trung_khop_truc_tiep,ngau_nhien,True,24360,10441,0.999904,0.999834,1.000000,0.999917,1.000000,"[[4400, 1], [0, 6040]]"
+random_split_bo_trung_khop_truc_tiep,ngau_nhien,False,24360,10441,0.997318,0.997517,0.997848,0.997683,0.999937,"[[4386, 15], [13, 6027]]"
+thuoc_moi_co_trung_khop_truc_tiep,thuoc_moi,True,24465,10336,0.999903,0.999832,1.000000,0.999916,1.000000,"[[4385, 1], [0, 5950]]"
+benh_moi_co_trung_khop_truc_tiep,benh_moi,True,24227,10574,0.993853,0.989402,1.000000,0.994673,0.996049,"[[4441, 65], [0, 6068]]"
+mau_am_kho_co_trung_khop_truc_tiep,ngau_nhien,True,28186,12080,0.994868,0.992422,0.997351,0.994880,0.999892,"[[5994, 46], [16, 6024]]"
+mau_am_kho_bo_trung_khop_truc_tiep,ngau_nhien,False,28186,12080,0.990315,0.987811,0.992881,0.990339,0.999661,"[[5966, 74], [43, 5997]]"
+mau_am_kho_thuoc_moi,thuoc_moi,True,28366,11900,0.995126,0.993137,0.997143,0.995136,0.999945,"[[5909, 41], [17, 5933]]"
+mau_am_kho_benh_moi,benh_moi,True,30396,9870,0.976900,0.983124,0.979235,0.981176,0.996708,"[[3700, 102], [126, 5942]]"

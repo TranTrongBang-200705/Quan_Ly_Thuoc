@@ -24,7 +24,13 @@ WITH MauDuong AS
         COALESCE(b.TenBenh, N'') AS DiseaseName,
         COALESCE(llt.MaLoaiLienKet, N'UNKNOWN') AS LinkTypeCode,
         COALESCE(mtc.MaMucTinCay, N'UNKNOWN') AS ConfidenceLevelCode,
-        COALESCE(CAST(lk.DiemLienKet AS nvarchar(30)), N'') AS SourceScore
+        COALESCE(CAST(lk.DiemLienKet AS nvarchar(30)), N'') AS SourceScore,
+        COALESCE(t.HoatChat, N'') AS HoatChat,
+        COALESCE(t.CongDung, N'') AS CongDung,
+        COALESCE(t.TacDungPhu, N'') AS TacDungPhu,
+        COALESCE(b.MoTa, N'') AS MoTaBenh,
+        COALESCE(b.TrieuChung, N'') AS TrieuChung,
+        COALESCE(b.ThuocDieuTriDaBiet, N'') AS ThuocDieuTriDaBiet
     FROM dbo.LienKetThuocBenh lk
     JOIN dbo.Thuoc t ON t.ThuocId = lk.ThuocId
     JOIN dbo.Benh b ON b.BenhId = lk.BenhId
@@ -50,7 +56,13 @@ MauAm AS
         COALESCE(b.TenBenh, N'') AS DiseaseName,
         N'UNKNOWN' AS LinkTypeCode,
         N'UNKNOWN' AS ConfidenceLevelCode,
-        N'' AS SourceScore
+        N'' AS SourceScore,
+        COALESCE(t.HoatChat, N'') AS HoatChat,
+        COALESCE(t.CongDung, N'') AS CongDung,
+        COALESCE(t.TacDungPhu, N'') AS TacDungPhu,
+        COALESCE(b.MoTa, N'') AS MoTaBenh,
+        COALESCE(b.TrieuChung, N'') AS TrieuChung,
+        COALESCE(b.ThuocDieuTriDaBiet, N'') AS ThuocDieuTriDaBiet
     FROM dbo.LienKetThuocBenh lkNguon
     JOIN dbo.Thuoc t ON t.ThuocId = lkNguon.ThuocId
     JOIN dbo.Benh b

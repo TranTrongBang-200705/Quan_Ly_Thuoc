@@ -1,0 +1,581 @@
+{
+  "model": "ai/models/random_forest_thuoc_benh.joblib",
+  "config": "ai/config/random_forest.json",
+  "ket_qua": [
+    {
+      "ten_case": "ho_co_dom",
+      "disease_id_goc": 3,
+      "benh_goc": "Điều trị Ho có đờm",
+      "trieu_chung": "Ho kèm khạc đờm/chất nhầy; có thể kèm khó thở, đau họng hoặc tức ngực tùy nguyên nhân.",
+      "so_thuoc_pred_1": 0,
+      "max_probability": 0.01,
+      "top_goi_y": [
+        {
+          "drug_id": 3407,
+          "ten_thuoc": "Hemolit Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 6694,
+          "ten_thuoc": "Neuronox 100IU Injection",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt; Phòng ngừa Đau nửa đầu Cervical Dystonia Muscle spasm",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 6886,
+          "ten_thuoc": "Oxerute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 7408,
+          "ten_thuoc": "Pilorute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 7716,
+          "ten_thuoc": "Pilogo Plus Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 5198,
+          "ten_thuoc": "Mirago 50 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 5526,
+          "ten_thuoc": "Mirabet 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 3670,
+          "ten_thuoc": "Irban 5mg Tablet",
+          "cong_dung": "Điều trị Đau thắt ngực; Điều trị Suy tim",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 2130,
+          "ten_thuoc": "Endonok Tablet",
+          "cong_dung": "Điều trị pelvic pain associated with Lạc nội mạc tử cung",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 4493,
+          "ten_thuoc": "Lupin Mira 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 1921,
+          "ten_thuoc": "Emersa 2mg Tablet",
+          "cong_dung": "Điều trị pelvic pain associated with Lạc nội mạc tử cung",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 595,
+          "ten_thuoc": "Azmarda 200mg Tablet",
+          "cong_dung": "Điều trị Suy tim",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 596,
+          "ten_thuoc": "Apresol Plus Tablet",
+          "cong_dung": "Điều trị Suy tim",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 1833,
+          "ten_thuoc": "Endoreg Tablet",
+          "cong_dung": "Điều trị pelvic pain associated with Lạc nội mạc tử cung",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        },
+        {
+          "drug_id": 3861,
+          "ten_thuoc": "Ivazine 5 Tablet",
+          "cong_dung": "Điều trị Đau thắt ngực; Điều trị Suy tim",
+          "predicted_label": 0,
+          "probability_positive": 0.003333
+        }
+      ]
+    },
+    {
+      "ten_case": "nhiem_khuan",
+      "disease_id_goc": 2,
+      "benh_goc": "Điều trị Nhiễm khuẩn",
+      "trieu_chung": "Sốt; đau, sưng, nóng đỏ hoặc chảy dịch tại vùng nhiễm; mệt mỏi; triệu chứng thay đổi theo vị trí nhiễm khuẩn.",
+      "so_thuoc_pred_1": 0,
+      "max_probability": 0.023333,
+      "top_goi_y": [
+        {
+          "drug_id": 3673,
+          "ten_thuoc": "Immunorel 5gm Solution for Infusion",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 6886,
+          "ten_thuoc": "Oxerute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.02
+        },
+        {
+          "drug_id": 7716,
+          "ten_thuoc": "Pilogo Plus Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.02
+        },
+        {
+          "drug_id": 3407,
+          "ten_thuoc": "Hemolit Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.02
+        },
+        {
+          "drug_id": 7408,
+          "ten_thuoc": "Pilorute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.02
+        },
+        {
+          "drug_id": 8359,
+          "ten_thuoc": "Rhoclone 300mcg Injection",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 8474,
+          "ten_thuoc": "Rhoclone 150mcg Injection",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 6114,
+          "ten_thuoc": "Meganano Gel",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 9568,
+          "ten_thuoc": "Silverstream Liquid",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 9429,
+          "ten_thuoc": "Silverstream Liquid",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 9322,
+          "ten_thuoc": "Silverkind Nanofine Gel",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 5600,
+          "ten_thuoc": "Meganano Gel",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 5890,
+          "ten_thuoc": "Meganano Gel",
+          "cong_dung": "Phòng ngừa Infections",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 6694,
+          "ten_thuoc": "Neuronox 100IU Injection",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt; Phòng ngừa Đau nửa đầu Cervical Dystonia Muscle spasm",
+          "predicted_label": 0,
+          "probability_positive": 0.013333
+        },
+        {
+          "drug_id": 6818,
+          "ten_thuoc": "Osil Cream",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.013333
+        }
+      ]
+    },
+    {
+      "ten_case": "di_ung_mui",
+      "disease_id_goc": 5,
+      "benh_goc": "Điều trị Hắt hơi và sổ mũi do dị ứng; Điều trị Tình trạng dị ứng",
+      "trieu_chung": "Hắt hơi; sổ mũi hoặc nghẹt mũi; ngứa mũi; có thể kèm chảy nước mắt.",
+      "so_thuoc_pred_1": 0,
+      "max_probability": 0.006667,
+      "top_goi_y": [
+        {
+          "drug_id": 6066,
+          "ten_thuoc": "MSN Mirabig-S 50 Combikit",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 2063,
+          "ten_thuoc": "Exena 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 7011,
+          "ten_thuoc": "Oabf 25mg Tablet",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 4493,
+          "ten_thuoc": "Lupin Mira 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5626,
+          "ten_thuoc": "Megatas 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5502,
+          "ten_thuoc": "Megatas 50 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5302,
+          "ten_thuoc": "Mirbeg 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 1086,
+          "ten_thuoc": "Antab Tablet",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5464,
+          "ten_thuoc": "Mirabig 25mg Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 1256,
+          "ten_thuoc": "Bladmir 25 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5467,
+          "ten_thuoc": "Mirago S 50 Combikit",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 1567,
+          "ten_thuoc": "Deritas 7.5 Tablet PR",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5739,
+          "ten_thuoc": "Mirbeg-S 25 Combo Pack",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5198,
+          "ten_thuoc": "Mirago 50 Tablet ER",
+          "cong_dung": "Điều trị Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 5412,
+          "ten_thuoc": "Mirago S 25 Combikit",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        }
+      ]
+    },
+    {
+      "ten_case": "trao_nguoc_da_day",
+      "disease_id_goc": 4,
+      "benh_goc": "Điều trị Bệnh trào ngược dạ dày thực quản; Điều trị Bệnh loét dạ dày tá tràng",
+      "trieu_chung": "Đau hoặc nóng rát vùng thượng vị; đầy bụng; buồn nôn; ợ hơi/ợ chua; có thể nặng hơn hoặc dịu đi sau ăn tùy trường hợp.",
+      "so_thuoc_pred_1": 0,
+      "max_probability": 0.016667,
+      "top_goi_y": [
+        {
+          "drug_id": 3407,
+          "ten_thuoc": "Hemolit Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 6886,
+          "ten_thuoc": "Oxerute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 7408,
+          "ten_thuoc": "Pilorute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 7716,
+          "ten_thuoc": "Pilogo Plus Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.016667
+        },
+        {
+          "drug_id": 6818,
+          "ten_thuoc": "Osil Cream",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.013333
+        },
+        {
+          "drug_id": 8446,
+          "ten_thuoc": "Ruticool Cream",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.013333
+        },
+        {
+          "drug_id": 3365,
+          "ten_thuoc": "Hadensa Ointment",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 3506,
+          "ten_thuoc": "Hadensa Ointment",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 6694,
+          "ten_thuoc": "Neuronox 100IU Injection",
+          "cong_dung": "Triệu chứng bàng quang tăng hoạt; Phòng ngừa Đau nửa đầu Cervical Dystonia Muscle spasm",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 6849,
+          "ten_thuoc": "Oxerute CD 500mg/500mg Tablet",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 8891,
+          "ten_thuoc": "Smuth Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.01
+        },
+        {
+          "drug_id": 4074,
+          "ten_thuoc": "KZ-XL Cream",
+          "cong_dung": "Nhiễm nấm da",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 4222,
+          "ten_thuoc": "Keyzol Cream",
+          "cong_dung": "Nhiễm nấm da",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 4181,
+          "ten_thuoc": "Ktc 2% Cream",
+          "cong_dung": "Nhiễm nấm da",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        },
+        {
+          "drug_id": 4160,
+          "ten_thuoc": "Kevon Cream",
+          "cong_dung": "Nhiễm nấm da",
+          "predicted_label": 0,
+          "probability_positive": 0.006667
+        }
+      ]
+    },
+    {
+      "ten_case": "alzheimer",
+      "disease_id_goc": 7,
+      "benh_goc": "Bệnh Alzheimer",
+      "trieu_chung": "Suy giảm trí nhớ; lú lẫn; khó thực hiện công việc quen thuộc; thay đổi hành vi/tính cách; giảm khả năng định hướng.",
+      "so_thuoc_pred_1": 0,
+      "max_probability": 0.026667,
+      "top_goi_y": [
+        {
+          "drug_id": 3407,
+          "ten_thuoc": "Hemolit Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.026667
+        },
+        {
+          "drug_id": 7716,
+          "ten_thuoc": "Pilogo Plus Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.026667
+        },
+        {
+          "drug_id": 7408,
+          "ten_thuoc": "Pilorute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.026667
+        },
+        {
+          "drug_id": 6886,
+          "ten_thuoc": "Oxerute Cream",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.026667
+        },
+        {
+          "drug_id": 3236,
+          "ten_thuoc": "Galamer 8 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 3074,
+          "ten_thuoc": "Galamer 4 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 6849,
+          "ten_thuoc": "Oxerute CD 500mg/500mg Tablet",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 3365,
+          "ten_thuoc": "Hadensa Ointment",
+          "cong_dung": "Điều trị Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 1640,
+          "ten_thuoc": "Donecept 10 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 25,
+          "ten_thuoc": "Aricep 10 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 8446,
+          "ten_thuoc": "Ruticool Cream",
+          "cong_dung": "Bệnh trĩ",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 1744,
+          "ten_thuoc": "Exelon Patch 15",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 8,
+          "ten_thuoc": "Aricep 5 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 1483,
+          "ten_thuoc": "Donep 10 Tablet",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        },
+        {
+          "drug_id": 1626,
+          "ten_thuoc": "Donep Syrup",
+          "cong_dung": "Bệnh Alzheimer",
+          "predicted_label": 0,
+          "probability_positive": 0.023333
+        }
+      ]
+    }
+  ]
+}
