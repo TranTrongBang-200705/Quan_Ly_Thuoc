@@ -79,13 +79,13 @@ class Settings(BaseSettings):
 
     @property
     def sqlalchemy_database_urls(self) -> list[tuple[str, str]]:
+        if self.database_url:
+            return [("DATABASE_URL", self.database_url)]
+
         urls = [(server, self.build_sqlalchemy_url(server)) for server in self.db_server_list]
 
         if urls:
             return urls
-
-        if self.database_url:
-            return [("DATABASE_URL", self.database_url)]
 
         raise ValueError("Missing SQL Server configuration. Set DB_SERVER and DB_NAME in .env.")
 

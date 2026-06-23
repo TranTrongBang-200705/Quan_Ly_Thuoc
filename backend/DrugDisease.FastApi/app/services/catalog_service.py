@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from sqlalchemy import func, or_, select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from app.models.db_models import (
@@ -30,7 +30,7 @@ def _page_size(page_size: int | None) -> int:
 
 def _charindex_any(keyword: str, columns: list) -> object:
     term = keyword.strip()
-    return or_(*[func.charindex(term, column) > 0 for column in columns])
+    return or_(*[column.ilike(f"%{term}%") for column in columns])
 
 
 def _as_float(value) -> float | None:
@@ -156,7 +156,7 @@ def list_thuoc(
     if tu_khoa and tu_khoa.strip():
         filters.append(_charindex_any(tu_khoa, [Thuoc.ten_thuoc, Thuoc.hoat_chat, Thuoc.cong_dung, Thuoc.tac_dung_phu, Thuoc.nha_san_xuat]))
     if nha_san_xuat and nha_san_xuat.strip():
-        filters.append(func.charindex(nha_san_xuat.strip(), Thuoc.nha_san_xuat) > 0)
+        filters.append(Thuoc.nha_san_xuat.ilike(f"%{nha_san_xuat.strip()}%"))
     if nhom_thuoc_id:
         filters.append(Thuoc.nhom_thuoc_id == nhom_thuoc_id)
     for condition in filters:

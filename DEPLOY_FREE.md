@@ -5,22 +5,31 @@ Kien truc khuyen nghi:
 - Frontend React: Vercel hoac Render Static Site.
 - Backend FastAPI: Render Web Service, Dockerfile `Dockerfile.backend`.
 - AI FastAPI: Render Web Service, Dockerfile `Dockerfile.ai`.
-- SQL Server database: Azure SQL Database free offer.
+- Database: PostgreSQL free (Neon/Supabase) for no-card deployment, or Azure SQL if you have a payment card.
 
 ## 1. Dua source len GitHub
 
 Render/Vercel deploy de nhat tu GitHub. Tren branch `deploy-free-hosting`, noi dung cua `Quan_Ly_Thuoc_RunTest` da nam ngay tai root repo.
 
-## 2. Tao Azure SQL Database free
+## 2. Tao PostgreSQL database free
 
-Tao database free tren Azure SQL, sau do import du lieu DataThuoc.
+Neu khong co the Visa/Mastercard, dung Neon hoac Supabase PostgreSQL la huong an toan nhat. Cach nay khong dung database SQL Server local cua ban, chi import ban sao du lieu.
 
-Neu ban dang co file `.bak`, Azure SQL Database khong import truc tiep `.bak`. Nen dung mot trong hai cach:
+Backend da ho tro `DATABASE_URL` PostgreSQL. Local SQL Server van chay nhu cu neu khong set `DATABASE_URL`.
 
-- Export database local thanh `.bacpac`, roi Import vao Azure SQL.
-- Chay script `.sql` trong `database/` neu script da day du schema + data.
+### Tao schema va import data
 
-Khi tao xong, mo firewall cua Azure SQL cho Render outbound IP hoac tam thoi Allow Azure services/your IP de test.
+Sau khi co PostgreSQL connection string, chay tren may local:
+
+```powershell
+cd Quan_Ly_Thuoc_RunTest
+$env:DATABASE_URL="postgresql+psycopg://USER:PASSWORD@HOST/DBNAME?sslmode=require"
+python scripts/create_tables.py
+python scripts/create_postgres_seed.py
+python scripts/load_postgres_seed.py
+```
+
+Script tren se tao bang, tao `database/postgres_seed.sql`, roi nap seed vao PostgreSQL.
 
 ## 3. Deploy AI service len Render
 
@@ -55,14 +64,7 @@ Environment variables:
 
 ```env
 ENVIRONMENT=production
-DB_DRIVER=ODBC Driver 18 for SQL Server
-DB_SERVER=your-sql-server.database.windows.net
-DB_NAME=DataThuoc
-DB_USERNAME=your_sql_admin_user
-DB_PASSWORD=your_sql_admin_password
-DB_ENCRYPT=yes
-DB_TRUST_SERVER_CERTIFICATE=no
-DB_CONNECTION_TIMEOUT=30
+DATABASE_URL=postgresql+psycopg://USER:PASSWORD@HOST/DBNAME?sslmode=require
 JWT_SECRET_KEY=replace_with_a_long_random_secret
 AI_SERVICE_URL=https://your-ai-service.onrender.com
 CORS_ORIGINS=https://your-frontend-domain.vercel.app,https://your-frontend-domain.onrender.com
