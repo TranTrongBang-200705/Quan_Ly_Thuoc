@@ -9,7 +9,7 @@ Kien truc khuyen nghi:
 
 ## 1. Dua source len GitHub
 
-Render/Vercel deploy de nhat tu GitHub. Thu muc goc nen la `Quan_Ly_Thuoc_RunTest`.
+Render/Vercel deploy de nhat tu GitHub. Tren branch `deploy-free-hosting`, noi dung cua `Quan_Ly_Thuoc_RunTest` da nam ngay tai root repo.
 
 ## 2. Tao Azure SQL Database free
 
@@ -27,7 +27,7 @@ Khi tao xong, mo firewall cua Azure SQL cho Render outbound IP hoac tam thoi All
 Create Web Service:
 
 - Environment: Docker
-- Root Directory: `Quan_Ly_Thuoc_RunTest`
+- Root Directory: de trong
 - Dockerfile Path: `Dockerfile.ai`
 - Health check path: `/health`
 
@@ -47,7 +47,7 @@ Sau khi deploy, copy URL dang `https://...onrender.com`.
 Create Web Service:
 
 - Environment: Docker
-- Root Directory: `Quan_Ly_Thuoc_RunTest`
+- Root Directory: de trong
 - Dockerfile Path: `Dockerfile.backend`
 - Health check path: `/api/health`
 
@@ -72,7 +72,7 @@ CORS_ORIGINS=https://your-frontend-domain.vercel.app,https://your-frontend-domai
 
 ### Vercel
 
-- Root Directory: `Quan_Ly_Thuoc_RunTest/frontend`
+- Root Directory: `frontend`
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Environment variable:
@@ -83,7 +83,7 @@ VITE_API_BASE_URL=https://your-backend-service.onrender.com/api
 
 ### Render Static Site
 
-- Root Directory: `Quan_Ly_Thuoc_RunTest/frontend`
+- Root Directory: `frontend`
 - Build Command: `npm ci && npm run build`
 - Publish Directory: `dist`
 - Environment variable:
