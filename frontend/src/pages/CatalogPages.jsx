@@ -1,5 +1,5 @@
 import { Link2, Pill, Search, Stethoscope } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { api } from "../api";
 import {
@@ -20,10 +20,10 @@ import {
 } from "../components/ui";
 import { useLoad } from "../hooks/useLoad";
 import { formatScore, getItems, getTotal, pageCount, truncate } from "../utils/format";
-import { filterAndRankCatalog } from "../utils/search";
 
-const CATALOG_PAGE_SIZE = 20000;
+const CATALOG_SEARCH_PAGE_SIZE = 60;
 const GROUP_LIMIT_STEP = 12;
+const EMPTY_SEARCH_RESULT = { items: [], data: [], total: 0, page: 1, pageSize: CATALOG_SEARCH_PAGE_SIZE };
 
 function useDebouncedValue(value, delay = 250) {
   const [debounced, setDebounced] = useState(value);
@@ -36,32 +36,11 @@ function useDebouncedValue(value, delay = 250) {
   return debounced;
 }
 
-function drugSearchFields(drug) {
-  return [
-    { value: drug.tenThuoc || drug.drugName || drug.activeName, weight: 1.45 },
-    { value: drug.tenThuocGoc || drug.tradeName, weight: 1.2 },
-    { value: drug.hoatChat, weight: 1.3 },
-    { value: drug.congDung || drug.knownIndications, weight: 1 },
-    { value: drug.tenNhomThuoc, weight: 0.9 },
-    { value: drug.dangBaoChe, weight: 0.55 },
-  ];
-}
-
-function diseaseSearchFields(disease) {
-  return [
-    { value: disease.tenBenh || disease.diseaseName, weight: 1.45 },
-    { value: disease.tenDongNghia, weight: 1.25 },
-    { value: disease.moTa || disease.description, weight: 1 },
-    { value: disease.trieuChung, weight: 1 },
-    { value: disease.thuocDieuTriDaBiet, weight: 0.75 },
-    { value: disease.tenNhomBenh, weight: 0.95 },
-  ];
-}
-
 function ResultGroup({
   title,
   icon: Icon,
   items,
+  total,
   visibleCount,
   onShowMore,
   children,
@@ -69,6 +48,7 @@ function ResultGroup({
   if (!items.length) return null;
   const visibleItems = items.slice(0, visibleCount);
   const remaining = items.length - visibleItems.length;
+  const totalCount = total ?? items.length;
 
   return (
     <section className="space-y-3">
@@ -107,6 +87,7 @@ export function CatalogPage() {
   const [detailDisease, setDetailDisease] = useState(null);
   const debouncedKeyword = useDebouncedValue(keyword, 250);
   const query = debouncedKeyword.trim();
+  const hasQuery = query.length > 0;
 
   useEffect(() => {
     setDrugVisibleCount(GROUP_LIMIT_STEP);
@@ -114,28 +95,23 @@ export function CatalogPage() {
   }, [query]);
 
   const drugs = useLoad(
-    () => api.getDrugs({ page: 1, pageSize: CATALOG_PAGE_SIZE }),
-    [],
+    () => api.getDrugs({ tuKhoa: query, page: 1, pageSize: CATALOG_SEARCH_PAGE_SIZE }),
+    [query],
+    { enabled: hasQuery, initialData: EMPTY_SEARCH_RESULT },
   );
   const diseases = useLoad(
-    () => api.getDiseases({ page: 1, pageSize: CATALOG_PAGE_SIZE }),
-    [],
+    () => api.getDiseases({ tuKhoa: query, page: 1, pageSize: CATALOG_SEARCH_PAGE_SIZE }),
+    [query],
+    { enabled: hasQuery, initialData: EMPTY_SEARCH_RESULT },
   );
 
-  const drugItems = getItems(drugs.data);
-  const diseaseItems = getItems(diseases.data);
-  const drugResults = useMemo(
-    () => filterAndRankCatalog(drugItems, query, drugSearchFields),
-    [drugItems, query],
-  );
-  const diseaseResults = useMemo(
-    () => filterAndRankCatalog(diseaseItems, query, diseaseSearchFields),
-    [diseaseItems, query],
-  );
-  const loading = drugs.loading || diseases.loading;
+  const drugItems = hasQuery ? getItems(drugs.data) : [];
+  const diseaseItems = hasQuery ? getItems(diseases.data) : [];
+  const loading = hasQuery && (drugs.loading || diseases.loading);
   const error = drugs.error || diseases.error;
-  const totalMatches = drugResults.total + diseaseResults.total;
-  const aliasUsed = drugResults.aliasUsed || diseaseResults.aliasUsed;
+  const totalDrugMatches = hasQuery ? getTotal(drugs.data) : 0;
+  const totalDiseaseMatches = hasQuery ? getTotal(diseases.data) : 0;
+  const totalMatches = totalDrugMatches + totalDiseaseMatches;
 
   return (
     <section className="space-y-5">
@@ -162,7 +138,7 @@ export function CatalogPage() {
                   </>
                 )}
             </p>
-            {aliasUsed && query && (
+            {false && (
               <span className="text-xs font-semibold text-teal-600">
                 Đã mở rộng tìm kiếm theo thuật ngữ liên quan
               </span>
@@ -193,7 +169,8 @@ export function CatalogPage() {
           <ResultGroup
             title="Thuốc phù hợp"
             icon={Pill}
-            items={drugResults.items}
+            items={drugItems}
+            total={totalDrugMatches}
             visibleCount={drugVisibleCount}
             onShowMore={() => setDrugVisibleCount((current) => current + GROUP_LIMIT_STEP)}
           >
@@ -209,7 +186,8 @@ export function CatalogPage() {
           <ResultGroup
             title="Bệnh/chỉ định phù hợp"
             icon={Stethoscope}
-            items={diseaseResults.items}
+            items={diseaseItems}
+            total={totalDiseaseMatches}
             visibleCount={diseaseVisibleCount}
             onShowMore={() => setDiseaseVisibleCount((current) => current + GROUP_LIMIT_STEP)}
           >

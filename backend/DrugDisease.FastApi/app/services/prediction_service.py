@@ -31,6 +31,10 @@ FALLBACK_WARNING = "AI service khong kha dung, he thong tam dung diem lien ket c
 SOURCE_AI = "AI_MODEL"
 SOURCE_FALLBACK = "DATABASE_FALLBACK"
 SOURCE_UNKNOWN = "UNKNOWN"
+AI_BATCH_SIZE = 2000
+AI_CANDIDATE_MIN = 80
+AI_CANDIDATE_MAX = 800
+AI_CANDIDATE_MULTIPLIER = 10
 
 
 @dataclass(frozen=True)
@@ -128,41 +132,52 @@ def confidence_id(score: float, levels: list[MucTinCay]) -> int | None:
     return None
 
 
-def candidate_rows(db: Session, req: PredictionCreateRequest, prediction_type: str) -> list[PredictionCandidate]:
+def candidate_limit(top_k: int) -> int:
+    return min(AI_CANDIDATE_MAX, max(AI_CANDIDATE_MIN, top_k * AI_CANDIDATE_MULTIPLIER))
+
+
+def candidate_rows(db: Session, req: PredictionCreateRequest, prediction_type: str, top_k: int) -> list[PredictionCandidate]:
+    limit = candidate_limit(top_k)
     if prediction_type == "DRUG_TO_DISEASE":
         thuoc = get_thuoc_or_throw(db, req.drug_id)
         rows = db.execute(
             select(Benh, LienKetThuocBenh, LoaiLienKet, MucTinCay)
-            .select_from(Benh)
-            .outerjoin(
-                LienKetThuocBenh,
-                and_(
-                    LienKetThuocBenh.thuoc_id == thuoc.thuoc_id,
-                    LienKetThuocBenh.benh_id == Benh.benh_id,
-                ),
-            )
+            .select_from(LienKetThuocBenh)
+            .join(Benh, LienKetThuocBenh.benh_id == Benh.benh_id)
             .outerjoin(LoaiLienKet, LienKetThuocBenh.loai_lien_ket_id == LoaiLienKet.loai_lien_ket_id)
             .outerjoin(MucTinCay, LienKetThuocBenh.muc_tin_cay_id == MucTinCay.muc_tin_cay_id)
-            .order_by(Benh.ten_benh)
+            .where(LienKetThuocBenh.thuoc_id == thuoc.thuoc_id)
+            .order_by(LienKetThuocBenh.diem_lien_ket.desc(), Benh.ten_benh)
+            .limit(limit)
         ).all()
+        if len(rows) < limit:
+            linked_benh_ids = [benh.benh_id for benh, *_ in rows]
+            extra_stmt = select(Benh).order_by(Benh.ten_benh).limit(limit - len(rows))
+            if linked_benh_ids:
+                extra_stmt = extra_stmt.where(~Benh.benh_id.in_(linked_benh_ids))
+            extra_rows = db.execute(extra_stmt).scalars().all()
+            rows = [*rows, *[(benh, None, None, None) for benh in extra_rows]]
         return [PredictionCandidate(thuoc=thuoc, benh=benh, link=link, loai=loai, muc=muc) for benh, link, loai, muc in rows]
 
     if prediction_type == "DISEASE_TO_DRUG":
         benh = get_benh_or_throw(db, req.disease_id)
         rows = db.execute(
             select(Thuoc, LienKetThuocBenh, LoaiLienKet, MucTinCay)
-            .select_from(Thuoc)
-            .outerjoin(
-                LienKetThuocBenh,
-                and_(
-                    LienKetThuocBenh.thuoc_id == Thuoc.thuoc_id,
-                    LienKetThuocBenh.benh_id == benh.benh_id,
-                ),
-            )
+            .select_from(LienKetThuocBenh)
+            .join(Thuoc, LienKetThuocBenh.thuoc_id == Thuoc.thuoc_id)
             .outerjoin(LoaiLienKet, LienKetThuocBenh.loai_lien_ket_id == LoaiLienKet.loai_lien_ket_id)
             .outerjoin(MucTinCay, LienKetThuocBenh.muc_tin_cay_id == MucTinCay.muc_tin_cay_id)
-            .order_by(Thuoc.ten_thuoc)
+            .where(LienKetThuocBenh.benh_id == benh.benh_id)
+            .order_by(LienKetThuocBenh.diem_lien_ket.desc(), Thuoc.ten_thuoc)
+            .limit(limit)
         ).all()
+        if len(rows) < limit:
+            linked_thuoc_ids = [thuoc.thuoc_id for thuoc, *_ in rows]
+            extra_stmt = select(Thuoc).order_by(Thuoc.ten_thuoc).limit(limit - len(rows))
+            if linked_thuoc_ids:
+                extra_stmt = extra_stmt.where(~Thuoc.thuoc_id.in_(linked_thuoc_ids))
+            extra_rows = db.execute(extra_stmt).scalars().all()
+            rows = [*rows, *[(thuoc, None, None, None) for thuoc in extra_rows]]
         return [PredictionCandidate(thuoc=thuoc, benh=benh, link=link, loai=loai, muc=muc) for thuoc, link, loai, muc in rows]
 
     thuoc = get_thuoc_or_throw(db, req.drug_id)
@@ -189,7 +204,14 @@ def ai_payload(candidates: list[PredictionCandidate]) -> list[dict[str, Any]]:
             "routeId": None,
             "nhomBenhId": item.benh.nhom_benh_id,
             "tenThuoc": item.thuoc.ten_thuoc or "",
+            "tenThuocGoc": item.thuoc.ten_thuoc_goc or "",
             "tenBenh": item.benh.ten_benh or "",
+            "hoatChat": item.thuoc.hoat_chat or "",
+            "congDung": item.thuoc.cong_dung or "",
+            "tacDungPhu": item.thuoc.tac_dung_phu or "",
+            "moTaBenh": item.benh.mo_ta or "",
+            "trieuChung": item.benh.trieu_chung or "",
+            "thuocDieuTriDaBiet": item.benh.thuoc_dieu_tri_da_biet or "",
         }
         for item in candidates
     ]
@@ -219,8 +241,11 @@ async def score_candidates(candidates: list[PredictionCandidate]) -> list[Scored
     if not candidates:
         return []
     try:
-        response = await ai_predict_batch(ai_payload(candidates))
-        ai_scores = parse_ai_scores(response)
+        ai_scores: dict[tuple[int, int], tuple[float, int | None]] = {}
+        for start in range(0, len(candidates), AI_BATCH_SIZE):
+            batch = candidates[start:start + AI_BATCH_SIZE]
+            response = await ai_predict_batch(ai_payload(batch))
+            ai_scores.update(parse_ai_scores(response))
         return [
             ScoredCandidate(
                 candidate=item,
@@ -264,6 +289,7 @@ def result_dto(result: KetQuaDuDoan, thuoc: Thuoc, benh: Benh, muc: MucTinCay | 
         "thuocId": result.thuoc_id,
         "tenThuoc": thuoc.ten_thuoc,
         "duongDanAnh": thuoc.duong_dan_anh,
+        "congDung": thuoc.cong_dung,
         "benhId": result.benh_id,
         "tenBenh": benh.ten_benh,
         "diemDuDoan": score,
@@ -279,6 +305,7 @@ def result_dto(result: KetQuaDuDoan, thuoc: Thuoc, benh: Benh, muc: MucTinCay | 
         "drugId": result.thuoc_id,
         "drugName": thuoc.ten_thuoc,
         "drugImageUrl": thuoc.duong_dan_anh,
+        "knownIndications": thuoc.cong_dung,
         "diseaseId": result.benh_id,
         "diseaseName": benh.ten_benh,
         "predictionScore": score,
@@ -305,7 +332,7 @@ async def create_prediction(db: Session, req: PredictionCreateRequest, user: Use
     prediction_type = validate_request(req)
     threshold = float(req.score_threshold if req.score_threshold is not None else 0)
     top_k = max(1, min(int(req.top_k or 10), 100))
-    candidates = candidate_rows(db, req, prediction_type)
+    candidates = candidate_rows(db, req, prediction_type, top_k)
     levels = db.execute(select(MucTinCay).order_by(MucTinCay.diem_tu.desc())).scalars().all()
     model = db.execute(select(MoHinhMayHoc).where(MoHinhMayHoc.dang_duoc_dung == True)).scalar_one_or_none()  # noqa: E712
     model_name = model.ten_mo_hinh if model else "RandomForest DataThuoc"
