@@ -8,6 +8,27 @@ import psycopg
 
 ROOT = Path(__file__).resolve().parents[1]
 SEED_SQL = ROOT / "database" / "postgres_seed.sql"
+TABLES = [
+    "PhanHoiKetQua",
+    "KetQuaDuDoan",
+    "YeuCauDuDoan",
+    "ChiTietTapDuLieu",
+    "MoHinhMayHoc",
+    "TapDuLieuHuanLuyen",
+    "LienKetThuocBenh",
+    "Benh",
+    "Thuoc",
+    "NguoiDungVaiTro",
+    "NguoiDungPhienDangNhap",
+    "NguoiDung",
+    "VaiTro",
+    "LoaiLienKet",
+    "NhomBenh",
+    "NhomThuoc",
+    "MucTinCay",
+    "TrangThaiKiemDuyet",
+    "NguonDuLieu",
+]
 
 
 def normalize_url(url: str) -> str:
@@ -24,6 +45,8 @@ def main() -> None:
     sql = SEED_SQL.read_text(encoding="utf-8")
     with psycopg.connect(normalize_url(database_url)) as connection:
         with connection.cursor() as cursor:
+            table_names = ", ".join(f'"{table}"' for table in TABLES)
+            cursor.execute(f"TRUNCATE TABLE {table_names} RESTART IDENTITY CASCADE")
             cursor.execute(sql)
         connection.commit()
     print("PostgreSQL seed imported.")
