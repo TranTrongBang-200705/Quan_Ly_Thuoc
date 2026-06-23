@@ -5,6 +5,9 @@ import csv
 import json
 import subprocess
 import sys
+import tempfile
+import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -52,7 +55,13 @@ WITH MauDuong AS
         COALESCE(b.TenBenh, N'') AS DiseaseName,
         COALESCE(llt.MaLoaiLienKet, N'UNKNOWN') AS LinkTypeCode,
         COALESCE(mtc.MaMucTinCay, N'UNKNOWN') AS ConfidenceLevelCode,
-        COALESCE(CAST(lk.DiemLienKet AS nvarchar(30)), N'') AS SourceScore
+        COALESCE(CAST(lk.DiemLienKet AS nvarchar(30)), N'') AS SourceScore,
+        COALESCE(t.HoatChat, N'') AS HoatChat,
+        COALESCE(t.CongDung, N'') AS CongDung,
+        COALESCE(t.TacDungPhu, N'') AS TacDungPhu,
+        COALESCE(b.MoTa, N'') AS MoTaBenh,
+        COALESCE(b.TrieuChung, N'') AS TrieuChung,
+        COALESCE(b.ThuocDieuTriDaBiet, N'') AS ThuocDieuTriDaBiet
     FROM dbo.LienKetThuocBenh lk
     JOIN dbo.Thuoc t ON t.ThuocId = lk.ThuocId
     JOIN dbo.Benh b ON b.BenhId = lk.BenhId
@@ -78,7 +87,13 @@ MauAm AS
         COALESCE(b.TenBenh, N'') AS DiseaseName,
         N'UNKNOWN' AS LinkTypeCode,
         N'UNKNOWN' AS ConfidenceLevelCode,
-        N'' AS SourceScore
+        N'' AS SourceScore,
+        COALESCE(t.HoatChat, N'') AS HoatChat,
+        COALESCE(t.CongDung, N'') AS CongDung,
+        COALESCE(t.TacDungPhu, N'') AS TacDungPhu,
+        COALESCE(b.MoTa, N'') AS MoTaBenh,
+        COALESCE(b.TrieuChung, N'') AS TrieuChung,
+        COALESCE(b.ThuocDieuTriDaBiet, N'') AS ThuocDieuTriDaBiet
     FROM dbo.LienKetThuocBenh lkNguon
     JOIN dbo.Thuoc t ON t.ThuocId = lkNguon.ThuocId
     JOIN dbo.Benh b
@@ -113,33 +128,45 @@ def doc_cau_hinh(duong_dan: str | Path) -> dict[str, Any]:
 def chay_lenh_sqlcmd(cau_hinh: dict[str, Any]) -> str:
     """Chạy sqlcmd và ép output UTF-8 để không hỏng tiếng Việt."""
     ky_tu_phan_tach = str(cau_hinh.get("ky_tu_phan_tach", "|"))
-
-    lenh = [
-        "sqlcmd",
-        "-S",
-        str(cau_hinh["sql_server"]),
-        "-E",
-        "-d",
-        str(cau_hinh["ten_database"]),
-        "-C",
-        "-W",
-        "-f",
-        "65001",
-        "-s",
-        ky_tu_phan_tach,
-        "-Q",
-        CAU_LENH_LAY_DU_LIEU,
-    ]
-
-    ket_qua = subprocess.run(
-        lenh,
-        check=True,
-        capture_output=True,
-        text=True,
+    tep_sql_tam = tempfile.NamedTemporaryFile(
+        mode="w",
+        suffix=".sql",
+        delete=False,
         encoding="utf-8",
-        errors="replace",
     )
-    return ket_qua.stdout
+
+    try:
+        tep_sql_tam.write(CAU_LENH_LAY_DU_LIEU)
+        tep_sql_tam.close()
+
+        lenh = [
+            "sqlcmd",
+            "-S",
+            str(cau_hinh["sql_server"]),
+            "-E",
+            "-d",
+            str(cau_hinh["ten_database"]),
+            "-C",
+            "-W",
+            "-f",
+            "65001",
+            "-s",
+            ky_tu_phan_tach,
+            "-i",
+            tep_sql_tam.name,
+        ]
+
+        ket_qua = subprocess.run(
+            lenh,
+            check=True,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+        )
+        return ket_qua.stdout
+    finally:
+        Path(tep_sql_tam.name).unlink(missing_ok=True)
 
 
 def la_dong_gach_ngang_sqlcmd(dong: str, delimiter: str) -> bool:
@@ -256,6 +283,155 @@ def chuyen_float_an_toan(gia_tri: Any, mac_dinh: float = 0.0) -> float:
         return mac_dinh
 
 
+def diem_loi_ma_hoa(gia_tri: str) -> int:
+    ky_tu_loi = ("Ã", "Ä", "Â", "Æ", "Å", "á", "à", "º", "»")
+    diem = sum(gia_tri.count(ky_tu) for ky_tu in ky_tu_loi)
+    diem += sum(1 for ky_tu in gia_tri if 0x80 <= ord(ky_tu) <= 0x9F)
+
+    return diem
+
+
+def chuyen_chuoi_mojibake_ve_byte(gia_tri: str) -> bytes:
+    ket_qua = bytearray()
+
+    for ky_tu in gia_tri:
+        ma_ky_tu = ord(ky_tu)
+
+        if ma_ky_tu <= 255:
+            ket_qua.append(ma_ky_tu)
+            continue
+
+        try:
+            ket_qua.extend(ky_tu.encode("cp1252"))
+        except UnicodeEncodeError:
+            ket_qua.extend(ky_tu.encode("utf-8"))
+
+    return bytes(ket_qua)
+
+
+def sua_loi_ma_hoa_tieng_viet(gia_tri: Any) -> Any:
+    if not isinstance(gia_tri, str) or not gia_tri:
+        return gia_tri
+
+    diem_ban_dau = diem_loi_ma_hoa(gia_tri)
+
+    if diem_ban_dau == 0:
+        return gia_tri
+
+    try:
+        da_sua = chuyen_chuoi_mojibake_ve_byte(gia_tri).decode("utf-8")
+    except UnicodeDecodeError:
+        return gia_tri
+
+    if diem_loi_ma_hoa(da_sua) < diem_ban_dau:
+        return da_sua
+
+    return gia_tri
+
+
+def sua_loi_ma_hoa_dataframe(du_lieu: pd.DataFrame) -> pd.DataFrame:
+    cac_cot_van_ban = [
+        "DrugCode",
+        "ActiveName",
+        "TradeName",
+        "RouteId",
+        "DiseaseCode",
+        "DiseaseName",
+        "LinkTypeCode",
+        "ConfidenceLevelCode",
+        "HoatChat",
+        "CongDung",
+        "TacDungPhu",
+        "MoTaBenh",
+        "TrieuChung",
+        "ThuocDieuTriDaBiet",
+    ]
+
+    for ten_cot in cac_cot_van_ban:
+        if ten_cot in du_lieu.columns:
+            du_lieu[ten_cot] = du_lieu[ten_cot].map(
+                sua_loi_ma_hoa_tieng_viet
+            )
+
+    return du_lieu
+
+
+def chuan_hoa_van_ban(gia_tri: Any) -> str:
+    chuoi = "" if gia_tri is None else str(gia_tri)
+    chuoi = unicodedata.normalize("NFD", chuoi)
+    chuoi = "".join(
+        ky_tu
+        for ky_tu in chuoi
+        if unicodedata.category(ky_tu) != "Mn"
+    )
+    chuoi = chuoi.replace("đ", "d").replace("Đ", "D")
+    chuoi = chuoi.replace("đ", "d").replace("Đ", "D")
+    chuoi = chuoi.lower()
+    chuoi = re.sub(r"[^a-z0-9]+", " ", chuoi)
+    return re.sub(r"\s+", " ", chuoi).strip()
+
+
+def tach_tu(gia_tri: Any) -> set[str]:
+    van_ban = chuan_hoa_van_ban(gia_tri)
+
+    if not van_ban:
+        return set()
+
+    # Xóa các cụm tiền tố nghiệp vụ, không xóa riêng từ "tri".
+    # Lý do: "Điều trị" -> "dieu tri" cần bỏ, nhưng "Trĩ" cũng thành "tri"
+    # sau khi bỏ dấu. Nếu đưa "tri" vào stopword thì bệnh "Bệnh trĩ" bị mất token.
+    cum_can_bo = [
+        r"\bho\s+tro\s+dieu\s+tri\b",
+        r"\bdieu\s+tri\b",
+        r"\bphong\s+ngua\b",
+        r"\bdu\s+phong\b",
+        r"\bchi\s+dinh\b",
+    ]
+    for mau in cum_can_bo:
+        van_ban = re.sub(mau, " ", van_ban)
+
+    tu_dung = {
+        "dieu",
+        "phong",
+        "ngua",
+        "du",
+        "chi",
+        "dinh",
+        "benh",
+        "va",
+        "do",
+        "kem",
+        "of",
+        "the",
+        "with",
+        "in",
+        "for",
+        "to",
+    }
+
+    return {
+        tu
+        for tu in van_ban.split()
+        if len(tu) > 1 and tu not in tu_dung
+    }
+
+
+def ti_le_tu_chung(
+    van_ban_1: Any,
+    van_ban_2: Any,
+) -> tuple[int, float]:
+    tap_1 = tach_tu(van_ban_1)
+    tap_2 = tach_tu(van_ban_2)
+
+    if not tap_1 or not tap_2:
+        return 0, 0.0
+
+    so_tu_chung = len(tap_1 & tap_2)
+    mau_so = max(1, min(len(tap_1), len(tap_2)))
+
+    return so_tu_chung, so_tu_chung / mau_so
+
+
 def them_dac_trung_json(
     dac_trung: dict[str, Any],
     feature_json: dict[str, Any],
@@ -289,20 +465,157 @@ def them_dac_trung_json(
 def tao_dac_trung(
     mau: pd.Series,
     loai_bo_ro_ri_nhan: bool = True,
+    su_dung_dac_trung_dinh_danh: bool = True,
+    su_dung_dac_trung_trung_khop_truc_tiep: bool = True,
+    su_dung_thuoc_dieu_tri_da_biet: bool = True,
+    su_dung_tac_dung_phu: bool = True,
+    che_do_dac_trung: str = "day_du",
 ) -> dict[str, Any]:
     feature_json = doc_json_an_toan(mau.get("FeatureVectorJson"))
+    ten_thuoc = str(mau.get("ActiveName", "") or "")
+    ten_benh = str(mau.get("DiseaseName", "") or "")
+    hoat_chat = str(mau.get("HoatChat", "") or "")
+    cong_dung = str(mau.get("CongDung", "") or "")
+    tac_dung_phu = str(mau.get("TacDungPhu", "") or "")
+    mo_ta_benh = str(mau.get("MoTaBenh", "") or "")
+    trieu_chung = str(mau.get("TrieuChung", "") or "")
+    thuoc_dieu_tri_da_biet = str(
+        mau.get("ThuocDieuTriDaBiet", "") or ""
+    )
+
+    if not su_dung_thuoc_dieu_tri_da_biet:
+        thuoc_dieu_tri_da_biet = ""
+
+    if not su_dung_tac_dung_phu:
+        tac_dung_phu = ""
+
+    cong_dung_chuan = chuan_hoa_van_ban(cong_dung)
+    ten_benh_chuan = chuan_hoa_van_ban(ten_benh)
+    so_tu_chung_cong_dung_benh, ti_le_cong_dung_benh = (
+        ti_le_tu_chung(cong_dung, ten_benh)
+    )
+    so_tu_chung_hoat_chat_benh, ti_le_hoat_chat_benh = (
+        ti_le_tu_chung(hoat_chat, ten_benh)
+    )
+    so_tu_chung_tac_dung_phu_benh, ti_le_tac_dung_phu_benh = (
+        ti_le_tu_chung(tac_dung_phu, ten_benh)
+    )
+    so_tu_chung_cong_dung_trieu_chung, ti_le_cong_dung_trieu_chung = (
+        ti_le_tu_chung(cong_dung, trieu_chung)
+    )
+    so_tu_chung_cong_dung_mo_ta, ti_le_cong_dung_mo_ta = (
+        ti_le_tu_chung(cong_dung, mo_ta_benh)
+    )
+    so_tu_chung_hoat_chat_trieu_chung, ti_le_hoat_chat_trieu_chung = (
+        ti_le_tu_chung(hoat_chat, trieu_chung)
+    )
+    (
+        so_tu_chung_tac_dung_phu_trieu_chung,
+        ti_le_tac_dung_phu_trieu_chung,
+    ) = ti_le_tu_chung(tac_dung_phu, trieu_chung)
+    (
+        so_tu_chung_ten_thuoc_thuoc_da_biet,
+        ti_le_ten_thuoc_thuoc_da_biet,
+    ) = ti_le_tu_chung(ten_thuoc, thuoc_dieu_tri_da_biet)
+    (
+        so_tu_chung_hoat_chat_thuoc_da_biet,
+        ti_le_hoat_chat_thuoc_da_biet,
+    ) = ti_le_tu_chung(hoat_chat, thuoc_dieu_tri_da_biet)
 
     dac_trung: dict[str, Any] = {
-        "drug_id": int(mau["DrugId"]),
-        "disease_id": int(mau["DiseaseId"]),
-        "drug_code": str(mau.get("DrugCode", "") or ""),
-        "disease_code": str(mau.get("DiseaseCode", "") or ""),
         "drug_group_id": str(mau.get("DrugGroupId", "") or ""),
         "route_id": str(mau.get("RouteId", "") or ""),
         "disease_group_id": str(mau.get("DiseaseGroupId", "") or ""),
-        "do_dai_ten_thuoc": len(str(mau.get("ActiveName", "") or "")),
-        "do_dai_ten_benh": len(str(mau.get("DiseaseName", "") or "")),
+        "do_dai_ten_thuoc": len(ten_thuoc),
+        "do_dai_ten_benh": len(ten_benh),
+        "do_dai_hoat_chat": len(hoat_chat),
+        "do_dai_cong_dung": len(cong_dung),
+        "do_dai_tac_dung_phu": len(tac_dung_phu),
+        "do_dai_mo_ta_benh": len(mo_ta_benh),
+        "do_dai_trieu_chung": len(trieu_chung),
+        "so_chi_dinh_trong_cong_dung": (
+            cong_dung.count(";") + 1
+            if cong_dung.strip()
+            else 0
+        ),
+        "so_tu_chung_hoat_chat_benh": so_tu_chung_hoat_chat_benh,
+        "ti_le_tu_chung_hoat_chat_benh": ti_le_hoat_chat_benh,
+        "so_tu_chung_tac_dung_phu_benh": so_tu_chung_tac_dung_phu_benh,
+        "ti_le_tu_chung_tac_dung_phu_benh": ti_le_tac_dung_phu_benh,
+        "so_tu_chung_cong_dung_trieu_chung": (
+            so_tu_chung_cong_dung_trieu_chung
+        ),
+        "ti_le_tu_chung_cong_dung_trieu_chung": (
+            ti_le_cong_dung_trieu_chung
+        ),
+        "so_tu_chung_cong_dung_mo_ta": so_tu_chung_cong_dung_mo_ta,
+        "ti_le_tu_chung_cong_dung_mo_ta": ti_le_cong_dung_mo_ta,
+        "so_tu_chung_hoat_chat_trieu_chung": (
+            so_tu_chung_hoat_chat_trieu_chung
+        ),
+        "ti_le_tu_chung_hoat_chat_trieu_chung": (
+            ti_le_hoat_chat_trieu_chung
+        ),
+        "so_tu_chung_tac_dung_phu_trieu_chung": (
+            so_tu_chung_tac_dung_phu_trieu_chung
+        ),
+        "ti_le_tu_chung_tac_dung_phu_trieu_chung": (
+            ti_le_tac_dung_phu_trieu_chung
+        ),
+        "so_tu_chung_ten_thuoc_thuoc_da_biet": (
+            so_tu_chung_ten_thuoc_thuoc_da_biet
+        ),
+        "ti_le_tu_chung_ten_thuoc_thuoc_da_biet": (
+            ti_le_ten_thuoc_thuoc_da_biet
+        ),
+        "so_tu_chung_hoat_chat_thuoc_da_biet": (
+            so_tu_chung_hoat_chat_thuoc_da_biet
+        ),
+        "ti_le_tu_chung_hoat_chat_thuoc_da_biet": (
+            ti_le_hoat_chat_thuoc_da_biet
+        ),
+        "so_tu_hoat_chat": len(tach_tu(hoat_chat)),
+        "so_tu_cong_dung": len(tach_tu(cong_dung)),
+        "so_tu_ten_benh": len(tach_tu(ten_benh)),
+        "so_tu_trieu_chung": len(tach_tu(trieu_chung)),
+        "so_tu_mo_ta_benh": len(tach_tu(mo_ta_benh)),
+        "so_tu_thuoc_dieu_tri_da_biet": len(
+            tach_tu(thuoc_dieu_tri_da_biet)
+        ),
+        "co_mo_ta_benh": int(bool(mo_ta_benh.strip())),
+        "co_trieu_chung": int(bool(trieu_chung.strip())),
+        "co_thuoc_dieu_tri_da_biet": int(
+            bool(thuoc_dieu_tri_da_biet.strip())
+        ),
     }
+
+    if su_dung_dac_trung_dinh_danh:
+        dac_trung.update(
+            {
+                "drug_id": int(mau["DrugId"]),
+                "disease_id": int(mau["DiseaseId"]),
+                "drug_code": str(mau.get("DrugCode", "") or ""),
+                "disease_code": str(mau.get("DiseaseCode", "") or ""),
+            }
+        )
+
+    if su_dung_dac_trung_trung_khop_truc_tiep:
+        dac_trung.update(
+            {
+                "ten_benh_nam_trong_cong_dung": int(
+                    bool(ten_benh_chuan)
+                    and ten_benh_chuan in cong_dung_chuan
+                ),
+                "cong_dung_nam_trong_ten_benh": int(
+                    bool(cong_dung_chuan)
+                    and cong_dung_chuan in ten_benh_chuan
+                ),
+                "so_tu_chung_cong_dung_benh": (
+                    so_tu_chung_cong_dung_benh
+                ),
+                "ti_le_tu_chung_cong_dung_benh": ti_le_cong_dung_benh,
+            }
+        )
 
     if not loai_bo_ro_ri_nhan:
         dac_trung["link_type_code"] = str(
@@ -321,7 +634,32 @@ def tao_dac_trung(
         loai_bo_ro_ri_nhan,
     )
 
-    return dac_trung
+    return loc_dac_trung_theo_che_do(dac_trung, che_do_dac_trung)
+
+
+def loc_dac_trung_theo_che_do(
+    dac_trung: dict[str, Any],
+    che_do_dac_trung: str,
+) -> dict[str, Any]:
+    che_do = (che_do_dac_trung or "day_du").strip().lower()
+
+    if che_do == "day_du":
+        return dac_trung
+
+    if che_do == "overlap_va_nhom":
+        ket_qua: dict[str, Any] = {}
+
+        for ten, gia_tri in dac_trung.items():
+            if ten in {"drug_group_id", "route_id", "disease_group_id"}:
+                ket_qua[ten] = gia_tri
+            elif "tu_chung" in ten or ten.startswith("ti_le_"):
+                ket_qua[ten] = gia_tri
+
+        return ket_qua
+
+    raise RuntimeError(
+        "che_do_dac_trung chi ho tro 'day_du' hoac 'overlap_va_nhom'."
+    )
 
 
 def chuan_bi_du_lieu(
@@ -366,6 +704,8 @@ def chuan_bi_du_lieu(
 
     if du_lieu.empty:
         raise RuntimeError("File dữ liệu train không có dòng dữ liệu hợp lệ.")
+
+    du_lieu = sua_loi_ma_hoa_dataframe(du_lieu)
 
     du_lieu["DatasetItemId"] = du_lieu["DatasetItemId"].astype(int)
     du_lieu["DrugId"] = du_lieu["DrugId"].astype(int)
@@ -484,9 +824,22 @@ def tinh_metric(
     mo_hinh: Pipeline,
     du_lieu: pd.DataFrame,
     loai_bo_ro_ri_nhan: bool,
+    su_dung_dac_trung_dinh_danh: bool,
+    su_dung_dac_trung_trung_khop_truc_tiep: bool,
+    su_dung_thuoc_dieu_tri_da_biet: bool,
+    su_dung_tac_dung_phu: bool,
+    che_do_dac_trung: str,
 ) -> dict[str, Any]:
     dac_trung = [
-        tao_dac_trung(mau, loai_bo_ro_ri_nhan)
+        tao_dac_trung(
+            mau,
+            loai_bo_ro_ri_nhan,
+            su_dung_dac_trung_dinh_danh,
+            su_dung_dac_trung_trung_khop_truc_tiep,
+            su_dung_thuoc_dieu_tri_da_biet,
+            su_dung_tac_dung_phu,
+            che_do_dac_trung,
+        )
         for _, mau in du_lieu.iterrows()
     ]
 
@@ -589,6 +942,97 @@ def chuyen_dict_key_json_an_toan(
     }
 
 
+def chon_benh_am_kho(
+    mau_duong: pd.Series,
+    benh_theo_nhom: dict[str, list[pd.Series]],
+    tat_ca_benh: list[pd.Series],
+    cap_duong: set[tuple[int, int]],
+) -> pd.Series | None:
+    thuoc_id = int(mau_duong["DrugId"])
+    benh_id = int(mau_duong["DiseaseId"])
+    nhom_benh_id = str(mau_duong.get("DiseaseGroupId", "") or "")
+    cong_dung = mau_duong.get("CongDung", "")
+
+    ung_vien = [
+        benh
+        for benh in benh_theo_nhom.get(nhom_benh_id, [])
+        if int(benh["DiseaseId"]) != benh_id
+        and (thuoc_id, int(benh["DiseaseId"])) not in cap_duong
+    ]
+
+    if not ung_vien:
+        ung_vien = [
+            benh
+            for benh in tat_ca_benh
+            if int(benh["DiseaseId"]) != benh_id
+            and (thuoc_id, int(benh["DiseaseId"])) not in cap_duong
+        ]
+
+    if not ung_vien:
+        return None
+
+    def diem_kho(benh: pd.Series) -> tuple[float, int]:
+        _, ti_le = ti_le_tu_chung(cong_dung, benh.get("DiseaseName", ""))
+        return ti_le, -int(benh["DiseaseId"])
+
+    return max(ung_vien, key=diem_kho)
+
+
+def tao_mau_am_kho(du_lieu: pd.DataFrame) -> pd.DataFrame:
+    mau_duong = du_lieu[du_lieu["LabelValue"].astype(int) == 1].copy()
+    benh = (
+        mau_duong.sort_values("DiseaseId")
+        .drop_duplicates("DiseaseId")
+        .copy()
+    )
+    tat_ca_benh = [dong for _, dong in benh.iterrows()]
+    benh_theo_nhom: dict[str, list[pd.Series]] = {}
+
+    for _, dong in benh.iterrows():
+        nhom = str(dong.get("DiseaseGroupId", "") or "")
+        benh_theo_nhom.setdefault(nhom, []).append(dong)
+
+    cap_duong = {
+        (int(dong["DrugId"]), int(dong["DiseaseId"]))
+        for _, dong in mau_duong.iterrows()
+    }
+
+    mau_am: list[pd.Series] = []
+    for _, dong in mau_duong.iterrows():
+        benh_am = chon_benh_am_kho(
+            dong,
+            benh_theo_nhom,
+            tat_ca_benh,
+            cap_duong,
+        )
+
+        if benh_am is None:
+            continue
+
+        dong_am = dong.copy()
+        dong_am["DatasetItemId"] = int(dong["DatasetItemId"]) + 300000000
+        dong_am["DiseaseId"] = int(benh_am["DiseaseId"])
+        dong_am["LabelValue"] = 0
+        dong_am["DiseaseGroupId"] = benh_am.get("DiseaseGroupId", "")
+        dong_am["DiseaseCode"] = benh_am.get("DiseaseCode", "")
+        dong_am["DiseaseName"] = benh_am.get("DiseaseName", "")
+        dong_am["MoTaBenh"] = benh_am.get("MoTaBenh", "")
+        dong_am["TrieuChung"] = benh_am.get("TrieuChung", "")
+        dong_am["ThuocDieuTriDaBiet"] = benh_am.get(
+            "ThuocDieuTriDaBiet",
+            "",
+        )
+        dong_am["LinkTypeCode"] = "UNKNOWN"
+        dong_am["ConfidenceLevelCode"] = "UNKNOWN"
+        dong_am["SourceScore"] = ""
+        mau_am.append(dong_am)
+
+    if not mau_am:
+        raise RuntimeError("Khong tao duoc mau am kho tu du lieu hien tai.")
+
+    return pd.concat([mau_duong, pd.DataFrame(mau_am)], ignore_index=True)
+
+
 def train(cau_hinh: dict[str, Any]) -> dict[str, Any]:
     delimiter = str(cau_hinh.get("ky_tu_phan_tach", "|"))
 
@@ -598,9 +1042,29 @@ def train(cau_hinh: dict[str, Any]) -> dict[str, Any]:
         delimiter,
     )
 
+    su_dung_mau_am_kho = bool(
+        cau_hinh.get("su_dung_mau_am_kho", False)
+    )
+
+    if su_dung_mau_am_kho:
+        du_lieu = tao_mau_am_kho(du_lieu)
+
     loai_bo_ro_ri_nhan = bool(
         cau_hinh.get("loai_bo_dac_trung_ro_ri_nhan", True)
     )
+    su_dung_dac_trung_dinh_danh = bool(
+        cau_hinh.get("su_dung_dac_trung_dinh_danh", True)
+    )
+    su_dung_dac_trung_trung_khop_truc_tiep = bool(
+        cau_hinh.get("su_dung_dac_trung_trung_khop_truc_tiep", True)
+    )
+    su_dung_thuoc_dieu_tri_da_biet = bool(
+        cau_hinh.get("su_dung_thuoc_dieu_tri_da_biet", True)
+    )
+    su_dung_tac_dung_phu = bool(
+        cau_hinh.get("su_dung_tac_dung_phu", True)
+    )
+    che_do_dac_trung = str(cau_hinh.get("che_do_dac_trung", "day_du"))
 
     if cau_hinh.get("su_dung_split_database", False):
         du_lieu_train = tach_theo_split(du_lieu, "TRAIN")
@@ -622,7 +1086,15 @@ def train(cau_hinh: dict[str, Any]) -> dict[str, Any]:
         cach_chia = "stratified_split"
 
     dac_trung_train = [
-        tao_dac_trung(mau, loai_bo_ro_ri_nhan)
+        tao_dac_trung(
+            mau,
+            loai_bo_ro_ri_nhan,
+            su_dung_dac_trung_dinh_danh,
+            su_dung_dac_trung_trung_khop_truc_tiep,
+            su_dung_thuoc_dieu_tri_da_biet,
+            su_dung_tac_dung_phu,
+            che_do_dac_trung,
+        )
         for _, mau in du_lieu_train.iterrows()
     ]
 
@@ -652,15 +1124,35 @@ def train(cau_hinh: dict[str, Any]) -> dict[str, Any]:
         "cach_chia_du_lieu_da_dung": cach_chia,
         "tham_so_random_forest": cau_hinh["tham_so_random_forest"],
         "loai_bo_dac_trung_ro_ri_nhan": loai_bo_ro_ri_nhan,
+        "su_dung_mau_am_kho": su_dung_mau_am_kho,
+        "su_dung_dac_trung_dinh_danh": su_dung_dac_trung_dinh_danh,
+        "su_dung_dac_trung_trung_khop_truc_tiep": (
+            su_dung_dac_trung_trung_khop_truc_tiep
+        ),
+        "su_dung_thuoc_dieu_tri_da_biet": (
+            su_dung_thuoc_dieu_tri_da_biet
+        ),
+        "su_dung_tac_dung_phu": su_dung_tac_dung_phu,
+        "che_do_dac_trung": che_do_dac_trung,
         "metric_validation": tinh_metric(
             mo_hinh,
             du_lieu_validation,
             loai_bo_ro_ri_nhan,
+            su_dung_dac_trung_dinh_danh,
+            su_dung_dac_trung_trung_khop_truc_tiep,
+            su_dung_thuoc_dieu_tri_da_biet,
+            su_dung_tac_dung_phu,
+            che_do_dac_trung,
         ),
         "metric_test": tinh_metric(
             mo_hinh,
             du_lieu_test,
             loai_bo_ro_ri_nhan,
+            su_dung_dac_trung_dinh_danh,
+            su_dung_dac_trung_trung_khop_truc_tiep,
+            su_dung_thuoc_dieu_tri_da_biet,
+            su_dung_tac_dung_phu,
+            che_do_dac_trung,
         ),
     }
 
