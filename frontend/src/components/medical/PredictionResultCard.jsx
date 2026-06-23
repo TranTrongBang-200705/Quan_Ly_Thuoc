@@ -74,6 +74,11 @@ export function PredictionResultCard({
     result.tenLoaiLienKet || result.linkType || "Đang phân loại";
   const drugName = result.tenThuoc || result.drugName;
   const diseaseName = result.tenBenh || result.diseaseName;
+  const drugIndication =
+    result.congDung ||
+    result.knownIndications ||
+    result.indication ||
+    result.drugIndication;
   const isFallback = source === "DATABASE_FALLBACK";
   const scoreNum = parseNumberInput(score);
   const image = resultImage(result, drugImage);
@@ -150,6 +155,16 @@ export function PredictionResultCard({
                 {suggestionLabel}: {suggestionName || "-"}
               </span>
             </div>
+            {drugIndication && (
+              <div className="mt-2 rounded-xl border border-teal-100 bg-teal-50/45 px-3 py-2">
+                <p className="m-0 text-[11px] font-bold uppercase tracking-wide text-teal-700">
+                  Công dụng thuốc
+                </p>
+                <p className="m-0 mt-1 text-xs leading-relaxed text-slate-700 line-clamp-3">
+                  {truncate(drugIndication, 260)}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-wrap gap-1.5">
@@ -221,6 +236,11 @@ export function PairCheckResultPanel({ result, drugImage = "" }) {
   const linkType = result?.tenLoaiLienKet || result?.linkType;
   const drugName = result?.tenThuoc || result?.drugName;
   const diseaseName = result?.tenBenh || result?.diseaseName;
+  const drugIndication =
+    result?.congDung ||
+    result?.knownIndications ||
+    result?.indication ||
+    result?.drugIndication;
   const source = result?.nguonDiem || result?.scoreSource || "UNKNOWN";
   const isFallback = source === "DATABASE_FALLBACK";
   const image = resultImage(result || {}, drugImage);
@@ -286,6 +306,7 @@ export function PairCheckResultPanel({ result, drugImage = "" }) {
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <DetailRow label="Thuốc" value={drugName} />
             <DetailRow label="Bệnh/chỉ định" value={diseaseName} />
+            <DetailRow label="Công dụng thuốc" value={drugIndication} />
             <DetailRow label="Mức tin cậy" value={confidence} />
             <DetailRow label="Loại liên kết" value={linkType} />
           </dl>
