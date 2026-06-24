@@ -1,0 +1,32 @@
+{
+  "ten_database": "DataThuoc",
+  "sql_server": "localhost\\SQLEXPRESS",
+  "xuat_lai_du_lieu": false,
+  "su_dung_split_database": false,
+  "su_dung_mau_am_kho": true,
+  "loai_bo_dac_trung_ro_ri_nhan": true,
+  "su_dung_dac_trung_dinh_danh": false,
+  "su_dung_dac_trung_trung_khop_truc_tiep": true,
+  "su_dung_thuoc_dieu_tri_da_biet": false,
+  "su_dung_tac_dung_phu": false,
+  "che_do_dac_trung": "day_du",
+  "ti_le_validation": 0.15,
+  "ti_le_test": 0.15,
+  "duong_dan_du_lieu": "ai/data/processed/du_lieu_train_thuoc_benh.psv",
+  "ky_tu_phan_tach": "\t",
+  "duong_dan_model": "ai/models/random_forest_thuoc_benh.joblib",
+  "duong_dan_bao_cao": "ai/reports/bao_cao_random_forest.json",
+  "duong_dan_do_quan_trong_dac_trung": "ai/reports/do_quan_trong_dac_trung.csv",
+  "tham_so_random_forest": {
+    "n_estimators": 300,
+    "criterion": "gini",
+    "max_depth": 12,
+    "min_samples_split": 2,
+    "min_samples_leaf": 1,
+    "max_features": "sqrt",
+    "bootstrap": true,
+    "class_weight": "balanced",
+    "random_state": 42,
+    "n_jobs": -1
+  }
+}

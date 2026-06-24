@@ -1,0 +1,49 @@
+﻿CaseGroup,DatasetItemId,DrugId,DiseaseId,DrugCode,DiseaseCode,ActiveName,DiseaseName,LabelValue,PredictedLabel,ProbabilityPositive,IsMatched
+duong_ngau_nhien_da_biet_lien_ket,15542,11456,786,THUOC11456,AI_DF1ADEE64137C3CBC3BC593CEBD18FE77300A,Zofer 4mg Viên nén,Nausea,1,1,0.9999346405228758,True
+duong_ngau_nhien_da_biet_lien_ket,9899,9899,22,THUOC09899,BENH00022,Ticagat Viên nén,Nhồi máu cơ tim và đột quỵ,1,1,1.0,True
+duong_ngau_nhien_da_biet_lien_ket,16660,11714,73,THUOC11714,BENH00073,Zydalis MD 10 Viên nén,Rối loạn cương dương,1,1,1.0,True
+duong_ngau_nhien_da_biet_lien_ket,10018,10018,49,THUOC10018,BENH00049,Triactin 4 Viên nén,Đau cơ,1,1,0.9999952611302609,True
+duong_ngau_nhien_da_biet_lien_ket,15408,6394,820,THUOC06394,AI_A867C8A3187558ECBCD74334536BE94482370,Neomol 80 Anal Thuốc đặt,Sốt,1,1,0.9991533667730657,True
+duong_ngau_nhien_da_biet_lien_ket,4086,4086,168,THUOC04086,BENH00168,Kelfer 500 Viên nang,Iron overload,1,1,0.9997111188352066,True
+duong_ngau_nhien_da_biet_lien_ket,6631,6631,336,THUOC06631,BENH00336,Nixitral 200 Viên nang,Nhiễm nấm,1,1,0.9999603174603174,True
+duong_ngau_nhien_da_biet_lien_ket,12016,8785,533,THUOC08785,BENH00533,Rabopep-L Viên nén SR,Trào ngược dạ dày thực quản,1,1,0.9999949486305015,True
+am_ngau_nhien_chua_co_lien_ket,100000222,222,84,THUOC00222,BENH00084,Arcolane 2% Scalp Dung dịch,Đau thần kinh,0,0,0.0,True
+am_ngau_nhien_chua_co_lien_ket,100008271,8271,5,THUOC08271,BENH00005,Rebozen-DSR Viên nang,Hắt hơi và sổ mũi do dị ứng; Điều trị Tình trạng dị ứng,0,0,0.0,True
+am_ngau_nhien_chua_co_lien_ket,100008070,8070,76,THUOC08070,BENH00076,Pdlast Viên nén,Xơ gan mật nguyên phát; Điều trị Sỏi túi mật,0,0,0.0,True
+am_ngau_nhien_chua_co_lien_ket,100019891,613,428,THUOC00613,BENH00428,Atorbest 10 Viên nén,Loét dạ dày tá tràng; Điều trị Hội chứng ruột kích thích Giảm đau,0,0,0.0,True
+am_ngau_nhien_chua_co_lien_ket,100007482,7482,31,THUOC07482,BENH00031,Picspot Gel bôi,Trầm cảm Đau thần kinh; Điều trị Đau nửa đầu,0,0,4.2361662695260785e-05,True
+am_ngau_nhien_chua_co_lien_ket,100008681,8681,279,THUOC08681,BENH00279,Rapilif-D 4/0.5 Viên nang,Tăng tiết axit dạ dày; Điều trị Loét dạ dày; Điều trị Bloating,0,0,5.490196078431373e-05,True
+am_ngau_nhien_chua_co_lien_ket,100018856,10349,23,THUOC10349,BENH00023,Telsar 80 Viên nén,Vitamin D deficiency; Điều trị Loãng xương,0,0,0.0,True
+am_ngau_nhien_chua_co_lien_ket,100011557,11557,274,THUOC11557,BENH00274,Zosert 100 Viên nén,Suy tim Low blood pressure,0,0,0.0,True
+duong_diem_cao_nhat,13,13,134,THUOC00013,BENH00134,Allegra-M Viên nén,Hắt hơi và sổ mũi do dị ứng,1,1,1.0,True
+duong_diem_cao_nhat,20260,11106,22,THUOC11106,BENH00022,Valembic 40mg Viên nén,Nhồi máu cơ tim và đột quỵ,1,1,1.0,True
+duong_diem_cao_nhat,15,15,35,THUOC00015,BENH00035,Alex Siro,Ho khan,1,1,1.0,True
+duong_diem_cao_nhat,17,17,13,THUOC00017,BENH00013,Augmentin Duo Hỗn dịch uống,Lao kháng thuốc; Điều trị Nhiễm khuẩn,1,1,1.0,True
+duong_diem_cao_nhat,17548,7158,162,THUOC07158,BENH00162,Oleanz RT 15 Viên nén,Tâm thần phân liệt,1,1,1.0,True
+duong_diem_cao_nhat,17526,9493,395,THUOC09493,BENH00395,Supermet XL 100 Viên nén,Rối loạn nhịp tim,1,1,1.0,True
+duong_diem_cao_nhat,46,46,13,THUOC00046,BENH00013,Augmentin DDS Hỗn dịch,Lao kháng thuốc; Điều trị Nhiễm khuẩn,1,1,1.0,True
+duong_diem_cao_nhat,50,50,21,THUOC00050,BENH00021,Asthalin 100mcg Ống hít,Phổi tắc nghẽn mạn tính; Điều trị và phòng ngừa Hen suyễn,1,1,1.0,True
+am_diem_thap_nhat,100000040,40,6,THUOC00040,BENH00006,Allegra Hỗn dịch Raspberry &amp; Vanilla,Tình trạng dị ứng; Điều trị Respiratory disease with excessive mucus; Điều trị Bệnh da kèm viêm và ngứa; Điều trị và phòng ngừa Bệnh Meniere,0,0,0.0,True
+am_diem_thap_nhat,100020249,3330,784,THUOC03330,AI_1342D5780FBD95A14396E94C256CEE772E8D9,Gutwin 550 Viên nén,Nasal allergy symptoms,0,0,0.0,True
+am_diem_thap_nhat,100020248,4828,300,THUOC04828,BENH00300,Livoluk Dung dịch uống,Short term fluid replacement after trauma; Điều trị Dehydration,0,0,0.0,True
+am_diem_thap_nhat,100015924,7400,534,THUOC07400,BENH00534,Pantop Thuốc tiêm,Hội chứng ruột kích thích; Điều trị Abdominal pain,0,0,0.0,True
+am_diem_thap_nhat,100020245,7773,95,THUOC07773,BENH00095,Pubergen HP 5000 Thuốc tiêm,Vitamin D deficiency,0,0,0.0,True
+am_diem_thap_nhat,100020243,5933,135,THUOC05933,BENH00135,Monzem LC Viên nén,Amyotrophic lateral sclerosis (ALS),0,0,0.0,True
+am_diem_thap_nhat,100020242,1367,146,THUOC01367,BENH00146,Bisosafe 2.5 Viên nén,Premature Labor,0,0,0.0,True
+am_diem_thap_nhat,100014060,1905,747,THUOC01905,AI_5BE706B8A93C30C758C655A8443833944161C,Emanzen Forte 10mg Viên nén,graft rejection following Bone marrow transplantation,0,0,0.0,True
+duong_de_nham_nhat_diem_thap,17486,10811,9,THUOC10811,BENH00009,Ubicar Kem bôi,Trĩ,1,1,0.7171428571428571,True
+duong_de_nham_nhat_diem_thap,356,356,116,THUOC00356,BENH00116,Airz Viên nang,Phổi tắc nghẽn mạn tính General Anaesthesia Bệnh loét dạ dày tá tràng,1,1,0.8225482555673038,True
+duong_de_nham_nhat_diem_thap,14384,5630,145,THUOC05630,BENH00145,Metolar 1mg Thuốc tiêm,Đau nửa đầu,1,1,0.8422785134653112,True
+duong_de_nham_nhat_diem_thap,14871,6863,246,THUOC06863,BENH00246,Omez Insta Sachet Mint,Loét dạ dày tá tràng,1,1,0.8511521780036566,True
+duong_de_nham_nhat_diem_thap,15776,9381,809,THUOC09381,AI_3093B1CC8D5477E409984BB86A1BEF446CE1D,Sertagress 50mg Viên nén,Rối loạn hoảng sợ,1,1,0.8563133812175044,True
+duong_de_nham_nhat_diem_thap,3093,3093,116,THUOC03093,BENH00116,Glynium Respicap,Phổi tắc nghẽn mạn tính General Anaesthesia Bệnh loét dạ dày tá tràng,1,1,0.8663828555431387,True
+duong_de_nham_nhat_diem_thap,19693,9101,679,THUOC09101,BENH00679,Sucral Kem bôi,Loét dạ dày,1,1,0.8860277498973771,True
+duong_de_nham_nhat_diem_thap,12305,8912,145,THUOC08912,BENH00145,Stemetil Thuốc tiêm,Đau nửa đầu,1,1,0.9065118079752226,True
+am_de_nham_nhat_diem_cao,100016518,9925,679,THUOC09925,BENH00679,Topcid 20 Viên nén,Loét dạ dày,0,1,0.9120893174759351,False
+am_de_nham_nhat_diem_cao,100018943,9725,679,THUOC09725,BENH00679,Topcid 40 Viên nén,Loét dạ dày,0,0,0.3715770168188973,True
+am_de_nham_nhat_diem_cao,100007910,7910,609,THUOC07910,BENH00609,Plagril 75 Viên nén,Nhồi máu cơ tim; Phòng ngừa Đột quỵ,0,0,0.35625730994152044,True
+am_de_nham_nhat_diem_cao,100000356,356,117,THUOC00356,BENH00117,Airz Viên nang,General Anaesthesia Bệnh loét dạ dày tá tràng,0,0,0.33895698572603405,True
+am_de_nham_nhat_diem_cao,100007839,7839,609,THUOC07839,BENH00609,Plagerine Viên nén,Nhồi máu cơ tim; Phòng ngừa Đột quỵ,0,0,0.1963282695374801,True
+am_de_nham_nhat_diem_cao,100012280,7609,679,THUOC07609,BENH00679,Pantop 20 Viên nén,Loét dạ dày,0,0,0.1853485521942725,True
+am_de_nham_nhat_diem_cao,100007534,7534,609,THUOC07534,BENH00609,Plavix Viên nén,Nhồi máu cơ tim; Phòng ngừa Đột quỵ,0,0,0.18299493620414675,True
+am_de_nham_nhat_diem_cao,100018995,8051,679,THUOC08051,BENH00679,Panpure Viên nén,Loét dạ dày,0,0,0.17015867092896664,True

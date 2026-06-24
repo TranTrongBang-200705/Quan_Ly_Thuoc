@@ -1,0 +1,60 @@
+{
+  "model": "ai/models/random_forest_thuoc_benh.joblib",
+  "dataset": "ai/data/processed/du_lieu_train_thuoc_benh.psv",
+  "so_case_moi_nhom": 8,
+  "tong_so_case": 48,
+  "ti_le_khop_toan_bo_case": 0.9791666666666666,
+  "su_dung_dac_trung_dinh_danh": false,
+  "su_dung_dac_trung_trung_khop_truc_tiep": true,
+  "tom_tat_theo_nhom": {
+    "am_de_nham_nhat_diem_cao": {
+      "so_case": 8,
+      "so_case_khop": 7,
+      "ti_le_khop": 0.875,
+      "xac_suat_duong_trung_binh": 0.3392138823534066,
+      "xac_suat_duong_thap_nhat": 0.17015867092896664,
+      "xac_suat_duong_cao_nhat": 0.9120893174759351
+    },
+    "am_diem_thap_nhat": {
+      "so_case": 8,
+      "so_case_khop": 8,
+      "ti_le_khop": 1.0,
+      "xac_suat_duong_trung_binh": 0.0,
+      "xac_suat_duong_thap_nhat": 0.0,
+      "xac_suat_duong_cao_nhat": 0.0
+    },
+    "am_ngau_nhien_chua_co_lien_ket": {
+      "so_case": 8,
+      "so_case_khop": 8,
+      "ti_le_khop": 1.0,
+      "xac_suat_duong_trung_binh": 1.2157952934946815e-05,
+      "xac_suat_duong_thap_nhat": 0.0,
+      "xac_suat_duong_cao_nhat": 5.490196078431373e-05
+    },
+    "duong_de_nham_nhat_diem_thap": {
+      "so_case": 8,
+      "so_case_khop": 8,
+      "ti_le_khop": 1.0,
+      "xac_suat_duong_trung_binh": 0.8435446998515465,
+      "xac_suat_duong_thap_nhat": 0.7171428571428571,
+      "xac_suat_duong_cao_nhat": 0.9065118079752226
+    },
+    "duong_diem_cao_nhat": {
+      "so_case": 8,
+      "so_case_khop": 8,
+      "ti_le_khop": 1.0,
+      "xac_suat_duong_trung_binh": 1.0,
+      "xac_suat_duong_thap_nhat": 1.0,
+      "xac_suat_duong_cao_nhat": 1.0
+    },
+    "duong_ngau_nhien_da_biet_lien_ket": {
+      "so_case": 8,
+      "so_case_khop": 8,
+      "ti_le_khop": 1.0,
+      "xac_suat_duong_trung_binh": 0.9998437066690286,
+      "xac_suat_duong_thap_nhat": 0.9991533667730657,
+      "xac_suat_duong_cao_nhat": 1.0
+    }
+  },
+  "ghi_chu": "LabelValue=1 la cap co lien ket trong database; LabelValue=0 la cap chua co lien ket duoc tao lam mau am. ProbabilityPositive la xac suat model du doan cap thuoc-benh co lien ket."
+}
